@@ -1,7 +1,12 @@
+import { BrowserRouter } from 'react-router-dom';
+import AppRouter from './routes/routes';
+
 function App() {
   return (
     <>
-      <h1 className="text-3xl font-bold underline text-blue-500">Hello world!</h1>
+      <BrowserRouter>
+        <AppRouter />
+      </BrowserRouter>
     </>
   );
 }
