@@ -1,11 +1,14 @@
 import Search from '@/components/search';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import React from 'react';
 
-const Topbar = () => {
+const Topbar = ({ displaySidebar }: { displaySidebar: boolean }) => {
   return (
-    <header className="px-10 py-5 border-b border-borderColor flex justify-between items-center">
+    <header
+      className={`${
+        displaySidebar ? 'pl-[350px]' : 'pl-16'
+      } pr-10 py-5 border-b border-borderColor flex justify-between items-center fixed top-0 left-0 right-0 bg-white transition-all duration-300 ease-linear z-[1]`}
+    >
       <Search />
       <div className="flex items-center gap-5">
         <div className="w-10 h-10 rounded-full border-borderColor border flex justify-center items-center cursor-pointer">

@@ -3,10 +3,27 @@ import { NavLink } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 
-const Sidebar = () => {
+const Sidebar = ({
+  displaySidebar,
+  onClick,
+}: {
+  displaySidebar: boolean;
+  onClick: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   return (
-    <div className="bg-gray-100 p-5 w-1/5 h-screen">
+    <aside
+      className={`bg-gray-100 p-5 w-[320px] fixed left-0 top-0 bottom-0 transition-all duration-300 ease-in z-10 ${
+        !displaySidebar && '-translate-x-full'
+      }`}
+    >
+      <div
+        className="absolute w-7 h-7 bg-white rounded-full shadow flex justify-center items-center cursor-pointer top-3 right-3"
+        onClick={() => onClick(!displaySidebar)}
+      >
+        <KeyboardDoubleArrowLeftIcon className="text-gray-500 hover:text-primary" />
+      </div>
       <div className="flex items-center justify-between flex-col gap-1">
         <img src="/images/logo.png" alt="logo" className="w-14 h-14" />
         <h1 className="font-bold text-xl">Quản lý chi tiêu</h1>
@@ -23,7 +40,7 @@ const Sidebar = () => {
           >
             {({ isActive }) => (
               <>
-                <HomeIcon className={isActive ? 'text-[#f0908b]' : 'text-gray-400 group-hover:text-[#f0908b]'} />
+                <HomeIcon className={isActive ? 'text-primary' : 'text-gray-400 group-hover:text-primary'} />
                 <span className="">Trang chủ</span>
               </>
             )}
@@ -40,7 +57,7 @@ const Sidebar = () => {
           >
             {({ isActive }) => (
               <>
-                <EditNoteIcon className={isActive ? 'text-[#f0908b]' : 'text-gray-400 group-hover:text-[#f0908b]'} />
+                <EditNoteIcon className={isActive ? 'text-primary' : 'text-gray-400 group-hover:text-primary'} />
                 <span className="">Thu chi</span>
               </>
             )}
@@ -57,14 +74,14 @@ const Sidebar = () => {
           >
             {({ isActive }) => (
               <>
-                <AnalyticsIcon className={isActive ? 'text-[#f0908b]' : 'text-gray-400 group-hover:text-[#f0908b]'} />
+                <AnalyticsIcon className={isActive ? 'text-primary' : 'text-gray-400 group-hover:text-primary'} />
                 <span className="">Báo cáo</span>
               </>
             )}
           </NavLink>
         </li>
       </ul>
-    </div>
+    </aside>
   );
 };
 

@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import MainLayout from '@/layouts/MainLayout';
 import HomePage from '@/pages/home/HomePage';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import Spending from '@/pages/spending/Spending';
+import SpendingPage from '@/pages/spending/SpendingPage';
+import NotFoundPage from '@/pages/notfound/NotFoundPage';
 
 interface IRouter {
   path: string;
@@ -12,12 +13,12 @@ interface IRouter {
 
 const clientRouter: IRouter[] = [
   {
-    path: '/spending',
-    element: Spending,
+    path: 'spending',
+    element: SpendingPage,
     title: 'Quản lý chi tiêu',
   },
   {
-    path: '/',
+    path: '',
     element: HomePage,
     title: 'Trang chủ',
   },
@@ -38,11 +39,12 @@ export default function AppRouter() {
 
   return (
     <Routes>
-      <Route element={<MainLayout />}>
+      <Route path="/" element={<MainLayout />}>
         {clientRouter.map(route => (
           <Route key={route.path} path={route.path} element={<route.element />} />
         ))}
       </Route>
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
