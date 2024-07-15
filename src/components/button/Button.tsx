@@ -1,7 +1,9 @@
 import { ReactNode } from 'react';
 
+type TypeButton = 'button' | 'submit';
+
 interface IButton {
-  type: 'button' | 'submit';
+  type: TypeButton;
   className?: string;
   onClick?: () => void;
   children: ReactNode;
@@ -12,7 +14,7 @@ const Button = ({ type = 'button', className = '', onClick = () => {}, children,
     <button
       type={type}
       onClick={onClick}
-      className={`${className} max-w-[300px] w-full mx-auto block bg-primary py-3 px-10 text-white font-semibold rounded-lg hover:bg-primary/70 transition-all duration-300 ease-linear shadow-sm`}
+      className={`${className} mx-auto block bg-primary py-3 px-10 text-white font-semibold rounded-lg hover:bg-primary/70 transition-all duration-300 ease-linear shadow-sm disabled:bg-gray-300/60 disabled:pointer-events-none`}
       {...props}
     >
       {children}
