@@ -4,6 +4,7 @@ import HomePage from '@/pages/home/HomePage';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import SpendingPage from '@/pages/spending/SpendingPage';
 import NotFoundPage from '@/pages/notfound/NotFoundPage';
+import StatisticPage from '@/pages/statistic/StatisticPage';
 
 interface IRouter {
   path: string;
@@ -13,12 +14,17 @@ interface IRouter {
 
 const clientRouter: IRouter[] = [
   {
-    path: 'spending',
+    path: '/statistic',
+    element: StatisticPage,
+    title: 'Báo cáo thống kê',
+  },
+  {
+    path: '/spending',
     element: SpendingPage,
     title: 'Quản lý chi tiêu',
   },
   {
-    path: '',
+    path: '/',
     element: HomePage,
     title: 'Trang chủ',
   },
@@ -39,7 +45,7 @@ export default function AppRouter() {
 
   return (
     <Routes>
-      <Route path="/" element={<MainLayout />}>
+      <Route element={<MainLayout />}>
         {clientRouter.map(route => (
           <Route key={route.path} path={route.path} element={<route.element />} />
         ))}

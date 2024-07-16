@@ -7,7 +7,7 @@ const Topbar = ({ displaySidebar }: { displaySidebar: boolean }) => {
     <header
       className={`${
         displaySidebar ? 'pl-[350px]' : 'pl-16'
-      } pr-10 py-5 border-b border-borderColor flex justify-between items-center fixed top-0 left-0 right-0 bg-white transition-all duration-300 ease-linear z-[1]`}
+      } pr-10 py-5 border-b border-borderColor flex justify-between items-center fixed top-0 left-0 right-0 bg-white transition-all duration-300 ease-linear z-[2]`}
     >
       <Search />
       <div className="flex items-center gap-5">

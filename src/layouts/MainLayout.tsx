@@ -11,7 +11,7 @@ const MainLayout = () => {
       <Sidebar displaySidebar={displaySidebar} onClick={setDisplaySidebar} />
       <div className={`flex-1 transition-all ease-linear ${displaySidebar && 'pl-[320px]'}`}>
         <div
-          className="w-7 h-7 bg-white rounded-full shadow-md flex justify-center items-center cursor-pointer fixed top-5 left-3 z-[2]"
+          className="w-7 h-7 bg-white rounded-full shadow-md flex justify-center items-center cursor-pointer fixed top-5 left-3 z-[3]"
           onClick={() => setDisplaySidebar(!displaySidebar)}
         >
           <KeyboardDoubleArrowRightIcon className="text-gray-500 hover:text-primary" />
