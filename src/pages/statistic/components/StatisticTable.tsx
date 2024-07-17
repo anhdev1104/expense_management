@@ -6,11 +6,27 @@ const Data = [
     id: 1,
     price: 600000,
     spendName: 'Quần áo',
+    icon: 'clothes-icon.svg',
   },
   {
     id: 2,
     price: 500000,
     spendName: 'Ăn uống',
+    icon: 'food-icon.svg',
+  },
+];
+const Data2 = [
+  {
+    id: 1,
+    price: 600000,
+    spendName: 'Thu nhập phụ',
+    icon: 'money-icon.svg',
+  },
+  {
+    id: 2,
+    price: 5000000,
+    spendName: 'Đầu tư',
+    icon: 'coin-icon.svg',
   },
 ];
 
@@ -18,7 +34,8 @@ Chart.register(CategoryScale);
 
 const StatisticTable = () => {
   const [tabActive, setTabActive] = useState<number>(1);
-  const [chartData, setChartData] = useState({
+  console.log('🚀 ~ StatisticTable ~ tabActive:', tabActive);
+  const [chartSpendData, setChartData] = useState({
     labels: Data.map(data => data.spendName),
     datasets: [
       {
@@ -30,7 +47,21 @@ const StatisticTable = () => {
       },
     ],
   });
-  console.log(setChartData);
+  const [chartIncomeData, setChartIncomeData] = useState({
+    labels: Data2.map(data => data.spendName),
+    datasets: [
+      {
+        label: 'Chi',
+        data: Data2.map(data => data.price),
+        backgroundColor: ['#2dd340', '#2ad0cd'],
+        borderColor: 'gray',
+        borderWidth: 1,
+      },
+    ],
+  });
+  console.log(setChartData, setChartIncomeData);
+
+  const fakeData = tabActive === 1 ? Data : Data2;
 
   const handleTabActive = (e: React.MouseEvent<HTMLDivElement>) => {
     const id = Number(e.currentTarget.dataset.id);
@@ -60,7 +91,26 @@ const StatisticTable = () => {
         </div>
       </div>
       <div className="mt-4">
-        <PieChart chartData={chartData} />
+        {tabActive === 1 ? (
+          <PieChart tab={tabActive} chartData={chartSpendData} />
+        ) : (
+          <PieChart tab={tabActive} chartData={chartIncomeData} />
+        )}
+      </div>
+
+      <div className="border-t border-gray-300 mt-5">
+        {fakeData.map(item => (
+          <div
+            className="flex justify-between items-center py-2 px-5 border border-t-transparent border-borderColor"
+            key={item.id}
+          >
+            <div className="flex items-center gap-5">
+              <img src={`/icon/${item.icon}`} alt={`icon ${item.spendName}`} className="w-10" />
+              <span className="font-medium">{item.spendName}</span>
+            </div>
+            <span className="font-medium">{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</span>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -4,9 +4,10 @@ import { Pie } from 'react-chartjs-2';
 
 interface PieChartProps {
   chartData: ChartData<'pie'>;
+  tab: number;
 }
 
-const PieChart: React.FC<PieChartProps> = ({ chartData }) => {
+const PieChart: React.FC<PieChartProps> = ({ chartData, tab }) => {
   return (
     <div className="w-[400px] mx-auto">
       <Pie
@@ -15,7 +16,7 @@ const PieChart: React.FC<PieChartProps> = ({ chartData }) => {
           plugins: {
             title: {
               display: true,
-              text: 'Thống kê chi tiêu trong tháng',
+              text: `Thống kê ${tab === 1 ? 'chi tiêu' : 'thu nhập'} trong tháng`,
             },
             tooltip: {
               callbacks: {
