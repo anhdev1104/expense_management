@@ -34,7 +34,6 @@ Chart.register(CategoryScale);
 
 const StatisticTable = () => {
   const [tabActive, setTabActive] = useState<number>(1);
-  console.log('🚀 ~ StatisticTable ~ tabActive:', tabActive);
   const [chartSpendData, setChartData] = useState({
     labels: Data.map(data => data.spendName),
     datasets: [
@@ -59,7 +58,6 @@ const StatisticTable = () => {
       },
     ],
   });
-  console.log(setChartData, setChartIncomeData);
 
   const fakeData = tabActive === 1 ? Data : Data2;
 

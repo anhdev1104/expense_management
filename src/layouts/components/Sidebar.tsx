@@ -1,9 +1,13 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import HomeIcon from '@mui/icons-material/Home';
-import EditNoteIcon from '@mui/icons-material/EditNote';
-import AnalyticsIcon from '@mui/icons-material/Analytics';
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+
+import {
+  AnalyticsIcon,
+  EditNoteIcon,
+  HomeIcon,
+  KeyboardDoubleArrowLeftIcon,
+  SettingsIcon,
+} from '@/components/icon/Icon';
 
 const Sidebar = ({
   displaySidebar,
@@ -59,6 +63,23 @@ const Sidebar = ({
               <>
                 <EditNoteIcon className={isActive ? 'text-primary' : 'text-gray-400 group-hover:text-primary'} />
                 <span className="">Thu chi</span>
+              </>
+            )}
+          </NavLink>
+        </li>
+        <li className="cursor-pointer hover:bg-white hover:shadow-sm hover:font-medium transition ease-in-out mb-2 rounded-md group">
+          <NavLink
+            to={'/spendlimit'}
+            className={({ isActive }) =>
+              isActive
+                ? 'flex items-center gap-3 px-5 py-2 bg-white font-medium rounded-md shadow-sm'
+                : 'flex items-center gap-3 px-5 py-2'
+            }
+          >
+            {({ isActive }) => (
+              <>
+                <SettingsIcon className={isActive ? 'text-primary' : 'text-gray-400 group-hover:text-primary'} />
+                <span className="">Hạn mức chi tiêu</span>
               </>
             )}
           </NavLink>

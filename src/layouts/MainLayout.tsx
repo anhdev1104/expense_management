@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Sidebar from './components/Sidebar';
 import Topbar from './components/Topbar';
 import { Outlet } from 'react-router-dom';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import { KeyboardDoubleArrowRightIcon } from '@/components/icon/Icon';
 
 const MainLayout = () => {
   const [displaySidebar, setDisplaySidebar] = useState<boolean>(true);
