@@ -1,25 +1,27 @@
-import { FC, InputHTMLAttributes, forwardRef, Ref } from 'react';
+import { FC } from 'react';
+import { useController } from 'react-hook-form';
 
-interface IInput extends InputHTMLAttributes<HTMLInputElement> {
+interface IInput {
   type?: string;
-  name: string;
   className?: string;
+  control: any;
+  name: string;
+  placeholder?: string;
 }
 
-const Input: FC<IInput> = forwardRef<HTMLInputElement, IInput>(
-  ({ type = 'text', name, className = '', ...props }, ref: Ref<HTMLInputElement>) => {
-    return (
-      <div>
-        <input
-          type={type}
-          id={name}
-          className={`${className} w-full shadow-sm bg-gray-200/50 px-5 py-3 rounded-md outline-none transition-all duration-300 ease-linear border border-transparent focus:bg-white focus:border focus:border-borderColor`}
-          ref={ref}
-          {...props}
-        />
-      </div>
-    );
-  }
-);
+const Input: FC<IInput> = ({ type = 'text', className = '', control, ...props }) => {
+  const { field } = useController({ control, name: props.name, defaultValue: '' });
+  return (
+    <div>
+      <input
+        {...field}
+        {...props}
+        type={type}
+        id={field.name}
+        className={`${className} w-full shadow-sm bg-gray-200/50 px-5 py-3 rounded-md outline-none transition-all duration-300 ease-linear border border-transparent focus:bg-white focus:border focus:border-borderColor`}
+      />
+    </div>
+  );
+};
 
 export default Input;

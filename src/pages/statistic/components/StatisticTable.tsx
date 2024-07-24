@@ -1,6 +1,6 @@
-import PieChart from '@/components/charts/PieChart';
 import React, { useState } from 'react';
 import Chart, { CategoryScale } from 'chart.js/auto';
+import { PieChart } from '@/components/charts';
 const Data = [
   {
     id: 1,
