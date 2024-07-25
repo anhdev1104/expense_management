@@ -37,7 +37,7 @@ const schema = yup
 const SignInPage = () => {
   const {
     handleSubmit,
-    formState: { isSubmitting, isValid, errors },
+    formState: { isSubmitting, errors },
     control,
     reset,
   } = useForm<IFormSignIn>({
@@ -70,7 +70,9 @@ const SignInPage = () => {
             <MessageForm error={errors.password?.message} />
           </Field>
           <div className="mt-10">
-            <Button type="submit">Đăng nhập</Button>
+            <Button type="submit" isLoading={isSubmitting} disabled={isSubmitting}>
+              Đăng nhập
+            </Button>
           </div>
           <div className="text-center mt-3">
             <span className="mr-2">Bạn chưa có tài khoản?</span>

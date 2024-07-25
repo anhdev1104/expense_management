@@ -40,7 +40,7 @@ const IncomeCate = () => {
             className="flex flex-col items-center border-2 border-borderColor rounded-md cursor-pointer hover:border-primary transition-all ease-linear p-2 gap-1"
             key={category.id}
           >
-            <img src={`/icon/${category.icon}`} alt="icon wallet" className="w-16 h-16" />
+            <img src={`/icon/${category.icon}`} className="w-16 h-16" />
             <span>{category.title}</span>
           </div>
         ))}

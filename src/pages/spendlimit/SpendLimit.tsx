@@ -7,32 +7,41 @@ import * as yup from 'yup';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 const schema = yup
   .object({
-    spendlimit: yup.string().required('Vui lòng chọn ngày!'),
+    spendlimit: yup
+      .number()
+      .typeError('Vui lòng nhập số tiền hợp lệ !')
+      .required('Vui lòng nhập số tiền hạn mức chi tiêu !'),
+    catespend: yup.string().required('Vui lòng chọn danh mục !'),
   })
   .required();
 
 const SpendLimit = () => {
   const {
     handleSubmit,
-    formState: { isSubmitting, isValid, errors },
+    formState: { isSubmitting, errors },
     control,
+    setValue,
     reset,
-  } = useForm<{ spendlimit: string }>({
+  } = useForm<{ spendlimit: number; catespend: string }>({
     resolver: yupResolver(schema),
-    mode: 'onSubmit',
+    mode: 'onChange',
   });
 
-  const handleSpendLimit: SubmitHandler<{ spendlimit: string }> = (values: any) => {
-    if (!isValid) return;
+  const handleSpendLimit: SubmitHandler<{ spendlimit: number; catespend: string }> = (values: any) => {
     console.log(values);
     reset();
   };
 
   useEffect(() => {
-    console.log(errors);
+    const arrErrors = Object.values(errors);
+
+    if (arrErrors.length > 0) {
+      toast.error(arrErrors[0].message);
+    }
   }, [errors]);
   return (
     <div className="mt-[120px] mb-20">
@@ -43,10 +52,12 @@ const SpendLimit = () => {
         </Field>
         <Field>
           <Label>Danh mục</Label>
-          <SpendCate />
+          <SpendCate setValue={setValue} control={control} />
         </Field>
         <div className="mt-10">
-          <Button type="submit">Thiết lập hạn mức</Button>
+          <Button type="submit" isLoading={isSubmitting} disabled={isSubmitting}>
+            Thiết lập hạn mức
+          </Button>
         </div>
       </form>
     </div>

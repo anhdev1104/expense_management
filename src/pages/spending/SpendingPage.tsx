@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from 'react';
-// import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-// import dayjs from 'dayjs';
 import Tab from './components/Tab';
 import Field from '@/components/field';
 import Input from '@/components/input';
@@ -16,34 +13,35 @@ import { toast } from 'react-toastify';
 import DatePickerCustom from '@/components/date/DatePickerCustom';
 
 interface IFormSpend {
-  spend: number;
   date: Date;
+  spend: number;
   description?: string;
+  catespend: string;
 }
 
 const schema = yup
   .object({
     date: yup.date().required('Vui lòng chọn ngày!'),
     spend: yup.number().typeError('Vui lòng nhập số tiền hợp lệ!').required('Vui lòng nhập tiền chi !'),
+    catespend: yup.string().required('Vui lòng chọn danh mục !'),
   })
   .required();
 
 const SpendingPage = () => {
   const {
     handleSubmit,
-    formState: { isSubmitting, isValid, errors },
+    formState: { isSubmitting, errors },
     control,
+    setValue,
     reset,
   } = useForm<IFormSpend>({
     resolver: yupResolver(schema),
-    mode: 'onSubmit',
+    mode: 'onChange',
   });
 
   const [tabActive, setTabActive] = useState<number>(1);
-
   useEffect(() => {
     const arrErrors = Object.values(errors);
-    console.log(errors);
 
     if (arrErrors.length > 0) {
       toast.error(arrErrors[0].message);
@@ -56,7 +54,6 @@ const SpendingPage = () => {
   };
 
   const onSpendingHandler: SubmitHandler<IFormSpend> = values => {
-    if (!isValid) return;
     console.log(values);
     reset();
   };
@@ -90,10 +87,12 @@ const SpendingPage = () => {
         )}
         <Field>
           <Label>Danh mục</Label>
-          {tabActive === 1 ? <SpendCate /> : <IncomeCate />}
+          {tabActive === 1 ? <SpendCate setValue={setValue} control={control} /> : <IncomeCate />}
         </Field>
         <div className="mt-10">
-          <Button type="submit">{tabActive === 1 ? 'Nhập khoảng chi' : 'Nhập khoảng thu'}</Button>
+          <Button type="submit" isLoading={isSubmitting} disabled={isSubmitting}>
+            {tabActive === 1 ? 'Nhập khoảng chi' : 'Nhập khoảng thu'}
+          </Button>
         </div>
       </form>
     </div>

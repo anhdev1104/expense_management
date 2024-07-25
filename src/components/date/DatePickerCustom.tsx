@@ -3,7 +3,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { Controller } from 'react-hook-form';
 
-const DatePickerCustom = ({ control, isDefaultValue }: { control: any; isDefaultValue: boolean }) => {
+const DatePickerCustom = ({ control, isDefaultValue }: { control: any; isDefaultValue?: boolean }) => {
   return (
     <div className="mt-3 w-full">
       <LocalizationProvider dateAdapter={AdapterDayjs}>

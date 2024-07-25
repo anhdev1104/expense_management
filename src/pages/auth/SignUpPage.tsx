@@ -44,7 +44,7 @@ const schema = yup
 const SignUpPage = () => {
   const {
     handleSubmit,
-    formState: { isSubmitting, isValid, errors },
+    formState: { isSubmitting, errors },
     control,
     reset,
   } = useForm<IFormSignUp>({
@@ -93,7 +93,9 @@ const SignUpPage = () => {
             <MessageForm error={errors?.confirm_password?.message} />
           </Field>
           <div className="mt-10">
-            <Button type="submit">Tạo tài khoản</Button>
+            <Button type="submit" disabled={isSubmitting} isLoading={isSubmitting}>
+              Tạo tài khoản
+            </Button>
           </div>
           <div className="text-center mt-3">
             <span className="mr-2">Bạn đã có tài khoản?</span>
