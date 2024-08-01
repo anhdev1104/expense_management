@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Tab from './components/Tab';
 import Field from '@/components/field';
 import Input from '@/components/input';
 import Label from '@/components/label';
 import SpendCate from './components/SpendCate';
 import Button from '@/components/button';
-import IncomeCate from './components/IncomeCate';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import DatePickerCustom from '@/components/date/DatePickerCustom';
+import { ICategory } from '@/types/category.type';
+import { getAllCategory } from '@/services/categoryService';
 
 interface IFormSpend {
   date: Date;
@@ -39,7 +40,8 @@ const SpendingPage = () => {
     mode: 'onChange',
   });
 
-  const [tabActive, setTabActive] = useState<number>(1);
+  const [tabActive, setTabActive] = useState<string>('expense');
+  const [category, setCategory] = useState<ICategory[]>([]);
   useEffect(() => {
     const arrErrors = Object.values(errors);
 
@@ -48,9 +50,16 @@ const SpendingPage = () => {
     }
   }, [errors]);
 
-  const handleActiveTab = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const id = Number(e.currentTarget.dataset.id);
-    setTabActive(id);
+  useEffect(() => {
+    (async () => {
+      const categoryData = await getAllCategory(tabActive);
+      categoryData && setCategory(categoryData);
+    })();
+  }, [tabActive]);
+
+  const handleActiveTab = (typeCategory: string) => {
+    // const id = Number(e.currentTarget.dataset.id);
+    setTabActive(typeCategory);
   };
 
   const onSpendingHandler: SubmitHandler<IFormSpend> = values => {
@@ -74,7 +83,7 @@ const SpendingPage = () => {
           <Label htmlFor="description">Ghi chú</Label>
           <Input name="description" placeholder="Nhập nội dung" className="mt-3" control={control} />
         </Field>
-        {tabActive === 1 ? (
+        {tabActive === 'expense' ? (
           <Field>
             <Label htmlFor="spend">Tiền chi</Label>
             <Input name="spend" placeholder="Nhập số tiền" className="mt-3" control={control} />
@@ -87,11 +96,11 @@ const SpendingPage = () => {
         )}
         <Field>
           <Label>Danh mục</Label>
-          {tabActive === 1 ? <SpendCate setValue={setValue} control={control} /> : <IncomeCate />}
+          <SpendCate category={category} setValue={setValue} control={control} />
         </Field>
         <div className="mt-10">
           <Button type="submit" isLoading={isSubmitting} disabled={isSubmitting}>
-            {tabActive === 1 ? 'Nhập khoảng chi' : 'Nhập khoảng thu'}
+            {tabActive === 'expense' ? 'Nhập khoảng chi' : 'Nhập khoảng thu'}
           </Button>
         </div>
       </form>

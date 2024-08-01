@@ -1,7 +1,8 @@
 import { TransactionType } from '@/enum/transaction';
 
 export interface ICategory {
-  name: string;
+  _id: string;
+  name: string | undefined;
   type: TransactionType.EXPENSE | TransactionType.INCOME;
   icon: string;
 }
