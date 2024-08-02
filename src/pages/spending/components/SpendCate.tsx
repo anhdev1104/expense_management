@@ -1,14 +1,28 @@
 import { ICategory } from '@/types/category.type';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
-const SpendCate = ({ category, setValue, control }: { category: ICategory[]; setValue: any; control: any }) => {
-  const [isActive, setIsActive] = useState<string>();
+const SpendCate = ({
+  category,
+  setValue,
+  control,
+  resetCate,
+}: {
+  category: ICategory[];
+  setValue: any;
+  control: any;
+  resetCate: boolean;
+}) => {
+  const [isActive, setIsActive] = useState<string | null>();
 
   const handleClick = (id: string | undefined, name: string | undefined) => {
-    setValue('catespend', name);
+    setValue('category', name);
     setIsActive(id);
   };
+
+  useEffect(() => {
+    setIsActive(null);
+  }, [resetCate]);
 
   return (
     <div className="grid grid-cols-3 gap-5 mt-3">
@@ -16,7 +30,7 @@ const SpendCate = ({ category, setValue, control }: { category: ICategory[]; set
         category.map(category => (
           <Controller
             key={category._id}
-            name="catespend"
+            name="category"
             control={control}
             render={({ field }) => (
               <div

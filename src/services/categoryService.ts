@@ -4,8 +4,8 @@ const http = new Http();
 
 export const getAllCategory = async (type?: any) => {
   try {
-    const response = await http.get(`/category/${type}`);
-    return response;
+    const data = await http.get(`/category/${type}`);
+    return data;
   } catch (error) {
     console.log(error);
   }

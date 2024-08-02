@@ -6,8 +6,10 @@ import Button from '@/components/button';
 import * as yup from 'yup';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { ICategory } from '@/types/category.type';
+import { getAllCategory } from '@/services/categoryService';
 
 const schema = yup
   .object({
@@ -31,10 +33,19 @@ const SpendLimit = () => {
     mode: 'onChange',
   });
 
+  const [category, setCategory] = useState<ICategory[]>([]);
+
   const handleSpendLimit: SubmitHandler<{ spendlimit: number; catespend: string }> = (values: any) => {
     console.log(values);
     reset();
   };
+
+  useEffect(() => {
+    (async () => {
+      const dataCategory = await getAllCategory('expense');
+      dataCategory && setCategory(dataCategory);
+    })();
+  });
 
   useEffect(() => {
     const arrErrors = Object.values(errors);
@@ -52,7 +63,7 @@ const SpendLimit = () => {
         </Field>
         <Field>
           <Label>Danh mục</Label>
-          <SpendCate setValue={setValue} control={control} />
+          <SpendCate category={category} setValue={setValue} control={control} />
         </Field>
         <div className="mt-10">
           <Button type="submit" isLoading={isSubmitting} disabled={isSubmitting}>

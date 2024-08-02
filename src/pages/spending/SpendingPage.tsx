@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { format } from 'date-fns';
 import Tab from './components/Tab';
 import Field from '@/components/field';
 import Input from '@/components/input';
@@ -12,19 +13,14 @@ import { toast } from 'react-toastify';
 import DatePickerCustom from '@/components/date/DatePickerCustom';
 import { ICategory } from '@/types/category.type';
 import { getAllCategory } from '@/services/categoryService';
-
-interface IFormSpend {
-  date: Date;
-  spend: number;
-  description?: string;
-  catespend: string;
-}
+import { addTransaction } from '@/services/transactionService';
+import { ITransaction } from '@/types/transaction.type';
 
 const schema = yup
   .object({
     date: yup.date().required('Vui lòng chọn ngày!'),
-    spend: yup.number().typeError('Vui lòng nhập số tiền hợp lệ!').required('Vui lòng nhập tiền chi !'),
-    catespend: yup.string().required('Vui lòng chọn danh mục !'),
+    money: yup.number().typeError('Vui lòng nhập số tiền hợp lệ!').required('Vui lòng nhập tiền chi !'),
+    category: yup.string().required('Vui lòng chọn danh mục !'),
   })
   .required();
 
@@ -35,18 +31,20 @@ const SpendingPage = () => {
     control,
     setValue,
     reset,
-  } = useForm<IFormSpend>({
+  } = useForm<ITransaction | any>({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
 
   const [tabActive, setTabActive] = useState<string>('expense');
   const [category, setCategory] = useState<ICategory[]>([]);
+  const [resetCate, setResetCate] = useState<boolean>(false);
+
   useEffect(() => {
     const arrErrors = Object.values(errors);
 
-    if (arrErrors.length > 0) {
-      toast.error(arrErrors[0].message);
+    if (arrErrors.length > 0 && arrErrors[0]?.message) {
+      toast.error(String(arrErrors[0].message));
     }
   }, [errors]);
 
@@ -58,24 +56,22 @@ const SpendingPage = () => {
   }, [tabActive]);
 
   const handleActiveTab = (typeCategory: string) => {
-    // const id = Number(e.currentTarget.dataset.id);
     setTabActive(typeCategory);
   };
 
-  const onSpendingHandler: SubmitHandler<IFormSpend> = values => {
-    console.log(values);
+  const onSpendingHandler: SubmitHandler<ITransaction> = async values => {
+    const { date, ...rest } = values;
+    const formatDate = format(date, 'd/M/yyyy');
+    const newTransaction = { ...rest, type: tabActive, date: formatDate };
+    await addTransaction(newTransaction);
     reset();
+    setResetCate(!resetCate);
   };
 
   return (
     <div className="mt-[120px] mb-20">
       <Tab tabActive={tabActive} onClick={handleActiveTab} />
-      <form
-        action=""
-        className="mt-5 w-[700px] px-10 mx-auto"
-        autoComplete="off"
-        onSubmit={handleSubmit(onSpendingHandler)}
-      >
+      <form className="mt-5 w-[700px] px-10 mx-auto" autoComplete="off" onSubmit={handleSubmit(onSpendingHandler)}>
         <Field>
           <DatePickerCustom control={control} />
         </Field>
@@ -83,20 +79,13 @@ const SpendingPage = () => {
           <Label htmlFor="description">Ghi chú</Label>
           <Input name="description" placeholder="Nhập nội dung" className="mt-3" control={control} />
         </Field>
-        {tabActive === 'expense' ? (
-          <Field>
-            <Label htmlFor="spend">Tiền chi</Label>
-            <Input name="spend" placeholder="Nhập số tiền" className="mt-3" control={control} />
-          </Field>
-        ) : (
-          <Field>
-            <Label htmlFor="income">Tiền thu</Label>
-            <Input name="income" placeholder="Nhập số tiền" className="mt-3" control={control} />
-          </Field>
-        )}
+        <Field>
+          <Label htmlFor="money">{tabActive === 'expense' ? 'Tiền chi' : 'Tiền thu'}</Label>
+          <Input name="money" placeholder="Nhập số tiền" className="mt-3" control={control} />
+        </Field>
         <Field>
           <Label>Danh mục</Label>
-          <SpendCate category={category} setValue={setValue} control={control} />
+          <SpendCate category={category} setValue={setValue} control={control} resetCate={resetCate} />
         </Field>
         <div className="mt-10">
           <Button type="submit" isLoading={isSubmitting} disabled={isSubmitting}>

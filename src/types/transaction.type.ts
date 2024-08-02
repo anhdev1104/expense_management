@@ -1,8 +1,9 @@
 import { TransactionType } from '@/enum/transaction';
 
 export interface ITransaction {
-  type: TransactionType.EXPENSE | TransactionType.INCOME;
-  date: string;
+  _id?: string;
+  type: TransactionType.EXPENSE | TransactionType.INCOME | string;
+  date: string | Date;
   description?: string;
   money: number;
   category: string;
