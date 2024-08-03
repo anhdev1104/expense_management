@@ -21,7 +21,6 @@ const StatisticPage = () => {
 
   useEffect(() => {
     if (watchedValue) {
-      console.log('Giá trị mới của date: ', watchedValue);
       const newDate = new Date(watchedValue).toLocaleDateString('vi-VI');
       console.log('🚀 ~ useEffect ~ newDate:', newDate);
     }
