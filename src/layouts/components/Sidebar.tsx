@@ -18,7 +18,7 @@ const Sidebar = ({
 }) => {
   return (
     <aside
-      className={`bg-gray-100 p-5 w-[320px] fixed left-0 top-0 bottom-0 transition-all duration-300 ease-in z-10 ${
+      className={`dark:border-r-[#666] dark:border-r dark:bg-slate-800 dark:text-white bg-gray-100 p-5 w-[320px] fixed left-0 top-0 bottom-0 transition-all duration-300 ease-in z-10 ${
         !displaySidebar && '-translate-x-full'
       }`}
     >
@@ -33,12 +33,12 @@ const Sidebar = ({
         <h1 className="font-bold text-xl">Quản lý chi tiêu</h1>
       </div>
       <ul className="mt-5 pt-5 border-t border-[#dbdbdb]">
-        <li className="cursor-pointer hover:bg-white hover:shadow-sm hover:font-medium transition ease-in-out mb-2 rounded-md group">
+        <li className="cursor-pointer hover:bg-white hover:shadow-sm hover:font-medium transition ease-in-out mb-2 rounded-md group dark:hover:text-black">
           <NavLink
             to={'/'}
             className={({ isActive }) =>
               isActive
-                ? 'flex items-center gap-3 px-5 py-2 bg-white font-medium rounded-md shadow-sm'
+                ? 'flex items-center gap-3 px-5 py-2 bg-white font-medium rounded-md shadow-sm dark:text-black'
                 : 'flex items-center gap-3 px-5 py-2'
             }
           >
@@ -50,12 +50,12 @@ const Sidebar = ({
             )}
           </NavLink>
         </li>
-        <li className="cursor-pointer hover:bg-white hover:shadow-sm hover:font-medium transition ease-in-out mb-2 rounded-md group">
+        <li className="cursor-pointer hover:bg-white hover:shadow-sm hover:font-medium transition ease-in-out mb-2 rounded-md group dark:hover:text-black">
           <NavLink
             to={'/spending'}
             className={({ isActive }) =>
               isActive
-                ? 'flex items-center gap-3 px-5 py-2 bg-white font-medium rounded-md shadow-sm'
+                ? 'flex items-center gap-3 px-5 py-2 bg-white font-medium rounded-md shadow-sm dark:text-black'
                 : 'flex items-center gap-3 px-5 py-2'
             }
           >
@@ -67,12 +67,12 @@ const Sidebar = ({
             )}
           </NavLink>
         </li>
-        <li className="cursor-pointer hover:bg-white hover:shadow-sm hover:font-medium transition ease-in-out mb-2 rounded-md group">
+        <li className="cursor-pointer hover:bg-white hover:shadow-sm hover:font-medium transition ease-in-out mb-2 rounded-md group dark:hover:text-black">
           <NavLink
             to={'/spendlimit'}
             className={({ isActive }) =>
               isActive
-                ? 'flex items-center gap-3 px-5 py-2 bg-white font-medium rounded-md shadow-sm'
+                ? 'flex items-center gap-3 px-5 py-2 bg-white font-medium rounded-md shadow-sm dark:text-black'
                 : 'flex items-center gap-3 px-5 py-2'
             }
           >
@@ -84,12 +84,12 @@ const Sidebar = ({
             )}
           </NavLink>
         </li>
-        <li className="cursor-pointer hover:bg-white hover:shadow-sm hover:font-medium transition ease-in-out mb-2 rounded-md group">
+        <li className="cursor-pointer hover:bg-white hover:shadow-sm hover:font-medium transition ease-in-out mb-2 rounded-md group dark:hover:text-black">
           <NavLink
             to={'/statistic'}
             className={({ isActive }) =>
               isActive
-                ? 'flex items-center gap-3 px-5 py-2 bg-white font-medium rounded-md shadow-sm'
+                ? 'flex items-center gap-3 px-5 py-2 bg-white font-medium rounded-md shadow-sm dark:text-black'
                 : 'flex items-center gap-3 px-5 py-2'
             }
           >

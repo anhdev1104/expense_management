@@ -1,24 +1,24 @@
 import { ChevronRightIcon, KeyboardArrowDownIcon, NotificationsNoneOutlinedIcon } from '@/components/icon/Icon';
 import Search from '@/components/search';
-import { useTheme } from '@/contexts/ThemeContext';
 import useClickOutSide from '@/hooks/useClickOutSide';
+import useDarkMode from '@/hooks/useDarkMode';
 import { Link } from 'react-router-dom';
 
 const Topbar = ({ displaySidebar }: { displaySidebar: boolean }) => {
   const { show, setShow, nodeRef } = useClickOutSide();
-  const { toggleTheme } = useTheme();
+  const { toggleDarkMode } = useDarkMode();
 
   return (
     <header
       className={`${
         displaySidebar ? 'pl-[350px]' : 'pl-16'
-      } pr-10 py-5 border-b border-borderColor flex justify-between items-center fixed top-0 left-0 right-0 bg-white transition-all duration-300 ease-linear z-[2]`}
+      } pr-10 py-5 border-b border-borderColor flex justify-between items-center fixed top-0 left-0 right-0 bg-white transition-all duration-300 ease-linear z-[2] dark:bg-slate-800 dark:text-slate-400`}
     >
       <Search />
       <div className="flex items-center gap-5">
-        <div onClick={toggleTheme}>
+        <div>
           <input type="checkbox" id="switch" className="switch-input" />
-          <label htmlFor="switch" className="switch"></label>
+          <label htmlFor="switch" className="switch" onClick={() => toggleDarkMode()}></label>
         </div>
         <div className="w-10 h-10 rounded-full border-borderColor border flex justify-center items-center cursor-pointer">
           <NotificationsNoneOutlinedIcon className="text-gray-500" />

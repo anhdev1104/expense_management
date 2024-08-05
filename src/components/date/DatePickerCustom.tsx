@@ -29,7 +29,7 @@ const DatePickerCustom = ({
                 onChange={date => {
                   field.onChange(date);
                 }}
-                className="w-full"
+                className="w-full dark:bg-gray-200/50"
               />
             );
           }}
