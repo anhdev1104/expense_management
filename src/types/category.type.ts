@@ -1,4 +1,4 @@
-import { TransactionType } from '@/enum/transaction';
+import { TransactionType } from '@/constants/transaction';
 
 export interface ICategory {
   _id: string;

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { format } from 'date-fns';
 import Tab from './components/Tab';
 import Field from '@/components/field';
 import Input from '@/components/input';
@@ -15,7 +14,7 @@ import { ICategory } from '@/types/category.type';
 import { getAllCategory } from '@/services/categoryService';
 import { addTransaction } from '@/services/transactionService';
 import { ITransaction } from '@/types/transaction.type';
-import { TransactionType } from '@/enum/transaction';
+import { TransactionType } from '@/constants/transaction';
 
 const schema = yup
   .object({
@@ -61,9 +60,7 @@ const SpendingPage = () => {
   };
 
   const onSpendingHandler: SubmitHandler<ITransaction> = async values => {
-    const { date, ...rest } = values;
-    const formatDate = format(date, 'd/M/yyyy');
-    const newTransaction = { ...rest, type: tabActive, date: formatDate };
+    const newTransaction = { ...values, type: tabActive };
     await addTransaction(newTransaction);
     if (tabActive === TransactionType.EXPENSE) {
       toast.success('Đã thêm khoảng chi !');

@@ -1,4 +1,5 @@
-import { TransactionType } from '@/enum/transaction';
+import { TransactionType } from '@/constants/transaction';
+import { ICategory } from './category.type';
 
 export interface ITransaction {
   _id?: string;
@@ -6,5 +7,5 @@ export interface ITransaction {
   date: string | Date;
   description?: string;
   money: number;
-  category: string;
+  category: ICategory;
 }

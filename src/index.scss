@@ -13,11 +13,50 @@
   .dropdown-triangle {
     width: 0;
     height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-bottom: 10px solid #f3f4f6;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid #f3f4f6;
     position: absolute;
     top: -10px;
     right: 20%;
+  }
+
+  .switch {
+    position: relative;
+    cursor: pointer;
+    width: 50px;
+    height: 26px;
+    display: block;
+    margin: 0 auto;
+    overflow: hidden;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    background: #ccc;
+    border-radius: 100rem;
+    transition: background-color 0.25s linear;
+  }
+
+  .switch:after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 40px;
+    background-color: #fff;
+    top: 3px;
+    left: 3px;
+    transition: background-color 0.25s linear, transform 0.25s linear;
+  }
+
+  .switch-input {
+    display: none;
+  }
+
+  .switch-input:checked + .switch {
+    @apply bg-primary;
+  }
+
+  .switch-input:checked + .switch:after {
+    transform: translateX(24px);
+    background-color: white;
   }
 }

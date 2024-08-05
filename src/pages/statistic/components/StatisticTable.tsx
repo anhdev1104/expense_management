@@ -1,87 +1,85 @@
-import React, { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Chart, { CategoryScale } from 'chart.js/auto';
 import { PieChart } from '@/components/charts';
-const Data = [
-  {
-    id: 1,
-    price: 600000,
-    spendName: 'Quần áo',
-    icon: 'clothes-icon.svg',
-  },
-  {
-    id: 2,
-    price: 500000,
-    spendName: 'Ăn uống',
-    icon: 'food-icon.svg',
-  },
-];
-const Data2 = [
-  {
-    id: 1,
-    price: 600000,
-    spendName: 'Thu nhập phụ',
-    icon: 'money-icon.svg',
-  },
-  {
-    id: 2,
-    price: 5000000,
-    spendName: 'Đầu tư',
-    icon: 'coin-icon.svg',
-  },
-];
+import { TransactionType } from '@/constants/transaction';
+import formatMoneyUtils from '@/helpers/formatMoneyUtils';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 Chart.register(CategoryScale);
 
 const StatisticTable = () => {
-  const [tabActive, setTabActive] = useState<number>(1);
-  const [chartSpendData, setChartData] = useState({
-    labels: Data.map(data => data.spendName),
-    datasets: [
-      {
-        label: 'Chi',
-        data: Data.map(data => data.price),
-        backgroundColor: ['#f3ba2f', '#2a71d0'],
-        borderColor: 'gray',
-        borderWidth: 1,
-      },
-    ],
-  });
-  const [chartIncomeData, setChartIncomeData] = useState({
-    labels: Data2.map(data => data.spendName),
-    datasets: [
-      {
-        label: 'Chi',
-        data: Data2.map(data => data.price),
-        backgroundColor: ['#2dd340', '#2ad0cd'],
-        borderColor: 'gray',
-        borderWidth: 1,
-      },
-    ],
-  });
+  const statisticData = useSelector((state: RootState) => state.statistic.data);
+  const dataExpense = useMemo(
+    () => statisticData.filter(item => item.type === TransactionType.EXPENSE),
+    [statisticData]
+  );
 
-  const fakeData = tabActive === 1 ? Data : Data2;
+  const dataIncome = useMemo(() => statisticData.filter(item => item.type === TransactionType.INCOME), [statisticData]);
 
-  const handleTabActive = (e: React.MouseEvent<HTMLDivElement>) => {
-    const id = Number(e.currentTarget.dataset.id);
-    setTabActive(id);
-  };
+  const [tabActive, setTabActive] = useState<string>('expense');
+
+  const chartSpendData = useMemo(
+    () => ({
+      labels: dataExpense.map(data => data.category.name),
+      datasets: [
+        {
+          label: 'Chi',
+          data: dataExpense.map(data => data.money),
+          backgroundColor: [
+            '#f3ba2f',
+            '#2a71d0',
+            '#f55fa0',
+            '#c0c0c0',
+            '#9c4422',
+            '#368734',
+            '#18896d',
+            '#4f2f99',
+            '#c0a822',
+          ],
+          borderColor: 'gray',
+          borderWidth: 1,
+        },
+      ],
+    }),
+    [dataExpense]
+  );
+
+  const chartIncomeData = useMemo(
+    () => ({
+      labels: dataIncome.map(data => data.category.name),
+      datasets: [
+        {
+          label: 'Thu',
+          data: dataIncome.map(data => data.money),
+          backgroundColor: ['#2dd340', '#2ad0cd'],
+          borderColor: 'gray',
+          borderWidth: 1,
+        },
+      ],
+    }),
+    [dataIncome]
+  );
+
+  const resultStatistic = tabActive === 'expense' ? dataExpense : dataIncome;
+  const chartData = tabActive === 'expense' ? chartSpendData : chartIncomeData;
 
   return (
     <div>
       <div className="flex items-center justify-between">
-        <div data-id={1} className="flex-1 cursor-pointer" onClick={handleTabActive}>
+        <div className="flex-1 cursor-pointer" onClick={() => setTabActive('expense')}>
           <span
             className={`border-b-2 ${
-              tabActive === 1 ? 'border-primary text-primary' : 'text-gray-400'
+              tabActive === 'expense' ? 'border-primary text-primary' : 'text-gray-400'
             } text-center py-2 inline-block w-full font-medium`}
           >
             Chi tiêu
           </span>
         </div>
-        <div data-id={2} className="flex-1 cursor-pointer" onClick={handleTabActive}>
+        <div data-id={2} className="flex-1 cursor-pointer" onClick={() => setTabActive('income')}>
           <span
             className={`border-b-2 ${
-              tabActive === 2 ? 'border-primary text-primary' : 'text-gray-400'
+              tabActive === 'income' ? 'border-primary text-primary' : 'text-gray-400'
             } text-center py-2 inline-block w-full font-medium`}
           >
             Thu nhập
@@ -89,24 +87,24 @@ const StatisticTable = () => {
         </div>
       </div>
       <div className="mt-4">
-        {tabActive === 1 ? (
-          <PieChart tab={tabActive} chartData={chartSpendData} />
+        {chartData.labels.length <= 0 ? (
+          <div className="p-5 rounded-md bg-primary text-white text-center font-bold my-10">Chưa có dữ liệu</div>
         ) : (
-          <PieChart tab={tabActive} chartData={chartIncomeData} />
+          <PieChart tab={tabActive} chartData={chartData} />
         )}
       </div>
 
       <div className="border-t border-gray-300 mt-5">
-        {fakeData.map(item => (
+        {resultStatistic.map(item => (
           <div
             className="flex justify-between items-center py-2 px-5 border border-t-transparent border-borderColor"
-            key={item.id}
+            key={item._id}
           >
             <div className="flex items-center gap-5">
-              <img src={`/icon/${item.icon}`} alt={`icon ${item.spendName}`} className="w-10" />
-              <span className="font-medium">{item.spendName}</span>
+              <img src={`/icon/${item.category.icon}`} alt={`icon ${item.category}`} className="w-10" />
+              <span className="font-medium">{item.category.name}</span>
             </div>
-            <span className="font-medium">{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}đ</span>
+            <span className="font-medium">{formatMoneyUtils(item.money) || 0}</span>
           </div>
         ))}
       </div>

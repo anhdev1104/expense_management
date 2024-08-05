@@ -1,10 +1,12 @@
 import { ChevronRightIcon, KeyboardArrowDownIcon, NotificationsNoneOutlinedIcon } from '@/components/icon/Icon';
 import Search from '@/components/search';
+import { useTheme } from '@/contexts/ThemeContext';
 import useClickOutSide from '@/hooks/useClickOutSide';
 import { Link } from 'react-router-dom';
 
 const Topbar = ({ displaySidebar }: { displaySidebar: boolean }) => {
   const { show, setShow, nodeRef } = useClickOutSide();
+  const { toggleTheme } = useTheme();
 
   return (
     <header
@@ -14,6 +16,10 @@ const Topbar = ({ displaySidebar }: { displaySidebar: boolean }) => {
     >
       <Search />
       <div className="flex items-center gap-5">
+        <div onClick={toggleTheme}>
+          <input type="checkbox" id="switch" className="switch-input" />
+          <label htmlFor="switch" className="switch"></label>
+        </div>
         <div className="w-10 h-10 rounded-full border-borderColor border flex justify-center items-center cursor-pointer">
           <NotificationsNoneOutlinedIcon className="text-gray-500" />
         </div>

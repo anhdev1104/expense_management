@@ -3,11 +3,13 @@ import Sidebar from './components/Sidebar';
 import Topbar from './components/Topbar';
 import { Outlet } from 'react-router-dom';
 import { KeyboardDoubleArrowRightIcon } from '@/components/icon/Icon';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const MainLayout = () => {
   const [displaySidebar, setDisplaySidebar] = useState<boolean>(true);
+  const { theme } = useTheme();
   return (
-    <main className="flex">
+    <main className={`flex ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
       <Sidebar displaySidebar={displaySidebar} onClick={setDisplaySidebar} />
       <div className={`flex-1 transition-all ease-linear ${displaySidebar && 'pl-[320px]'}`}>
         <div

@@ -15,8 +15,8 @@ const SpendCate = ({
 }) => {
   const [isActive, setIsActive] = useState<string | null>();
 
-  const handleClick = (id: string | undefined, name: string | undefined) => {
-    setValue('category', name);
+  const handleClick = (id: string | undefined) => {
+    setValue('category', id);
     setIsActive(id);
   };
 
@@ -38,7 +38,7 @@ const SpendCate = ({
                 className={`flex flex-col items-center border-2 rounded-md cursor-pointer hover:border-primary transition-all ease-linear p-2 gap-1 ${
                   isActive === category._id ? 'border-primary' : 'border-borderColor'
                 }`}
-                onClick={() => handleClick(category._id, category.name)}
+                onClick={() => handleClick(category._id)}
               >
                 <img src={`/icon/${category.icon}`} alt={category.name} className="w-16 h-16" />
                 <span>{category.name}</span>

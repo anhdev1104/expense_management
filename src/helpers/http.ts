@@ -37,7 +37,7 @@ class Http {
 
   async get(url: string, type: string = '') {
     try {
-      const response = await this.api.get(`${url}/${type}`);
+      const response = await this.api.get(`${url}${type && `/${type}`}`);
       return response.data;
     } catch (error: any) {
       return error.response.data;
