@@ -21,7 +21,7 @@ const Topbar = ({ displaySidebar }: { displaySidebar: boolean }) => {
           <label htmlFor="switch" className="switch" onClick={() => toggleDarkMode()}></label>
         </div>
         <div className="w-10 h-10 rounded-full border-borderColor border flex justify-center items-center cursor-pointer">
-          <NotificationsNoneOutlinedIcon className="text-gray-500" />
+          <NotificationsNoneOutlinedIcon className="text-gray-500 dark:text-white" />
         </div>
         <div className="flex items-center gap-2 cursor-pointer relative" onClick={() => setShow(!show)} ref={nodeRef}>
           <div className="w-10 h-10 rounded-full overflow-hidden">
@@ -39,12 +39,12 @@ const Topbar = ({ displaySidebar }: { displaySidebar: boolean }) => {
             <div className="absolute top-full right-0 w-[200px] rounded translate-y-2 shadow-lg z-50 bg-gray-100">
               <ul className="flex flex-col">
                 <li className="cursor-pointer  hover:bg-white hover:shadow-sm hover:font-medium transition ease-in-out group">
-                  <Link to={'/profile'} className="py-2 block px-5 text-sm">
+                  <Link to={'/profile'} className="py-2 block px-5 text-sm dark:text-black">
                     Thông tin cá nhân
                   </Link>
                 </li>
                 <li className="cursor-pointer hover:bg-white hover:shadow-sm hover:font-medium transition ease-in-out group">
-                  <Link to={'/sign-in'} className="py-2 block px-5 text-sm">
+                  <Link to={'/sign-in'} className="py-2 block px-5 text-sm dark:text-black">
                     Đăng xuất
                   </Link>
                 </li>

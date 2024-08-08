@@ -52,6 +52,15 @@ class Http {
       return error.response.data;
     }
   }
+
+  async delete(url: string, id: string) {
+    try {
+      const response = await this.api.delete(`${url}/${id}`);
+      return response.data;
+    } catch (error: any) {
+      return error.response.data;
+    }
+  }
 }
 
 export default Http;

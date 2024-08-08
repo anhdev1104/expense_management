@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply text-base min-h-screen;
+    @apply text-base min-h-screen scroll-smooth;
   }
 }
 
@@ -17,7 +17,7 @@
     border-right: 5px solid transparent;
     border-bottom: 5px solid #f3f4f6;
     position: absolute;
-    top: -10px;
+    top: -5px;
     right: 20%;
   }
 
@@ -59,4 +59,23 @@
     transform: translateX(24px);
     background-color: white;
   }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #999;
+  border-radius: 8px;
+  transition: all 0.3s linear;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
 }

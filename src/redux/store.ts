@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 import statisticSlice from './slices/statisticSlice';
+import spendlimitSlice from './slices/spendlimitSlice';
 
 const store = configureStore({
   reducer: {
     statistic: statisticSlice,
+    spendlimit: spendlimitSlice,
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware(),
 });

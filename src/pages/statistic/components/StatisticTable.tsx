@@ -5,23 +5,55 @@ import { TransactionType } from '@/constants/transaction';
 import formatMoneyUtils from '@/helpers/formatMoneyUtils';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { ITransaction } from '@/types/transaction.type';
 
 Chart.register(CategoryScale);
 
 const StatisticTable = () => {
   const statisticData = useSelector((state: RootState) => state.statistic.data);
-  const dataExpense = useMemo(
-    () => statisticData.filter(item => item.type === TransactionType.EXPENSE),
-    [statisticData]
-  );
 
-  const dataIncome = useMemo(() => statisticData.filter(item => item.type === TransactionType.INCOME), [statisticData]);
+  // hàm nhóm dữ liệu theo danh mục
+  const groupByCategory = (data: ITransaction[]) => {
+    return data.reduce(
+      (acc, item) => {
+        const id = item.category._id;
+        const categoryName = item.category?.name ?? 'Danh mục chưa xác định'; // Mặc định là "Danh mục chưa xác định"
+        const categoryIcon = item.category?.icon ?? 'default-icon.png'; // Icon mặc định
+
+        if (!acc[categoryName]) {
+          acc[categoryName] = { _id: id, name: categoryName, icon: categoryIcon, money: 0 };
+        }
+        acc[categoryName].money += item.money;
+
+        return acc;
+      },
+      {} as Record<
+        string,
+        {
+          _id: string | null | undefined;
+          name: string;
+          icon: string;
+          money: number;
+        }
+      >
+    );
+  };
+
+  const dataExpense = useMemo(() => {
+    const groupedData = groupByCategory(statisticData.filter(item => item.type === TransactionType.EXPENSE));
+    return Object.values(groupedData);
+  }, [statisticData]);
+
+  const dataIncome = useMemo(() => {
+    const groupedData = groupByCategory(statisticData.filter(item => item.type === TransactionType.INCOME));
+    return Object.values(groupedData);
+  }, [statisticData]);
 
   const [tabActive, setTabActive] = useState<string>('expense');
 
   const chartSpendData = useMemo(
     () => ({
-      labels: dataExpense.map(data => data.category.name),
+      labels: dataExpense.map(data => data.name),
       datasets: [
         {
           label: 'Chi',
@@ -47,7 +79,7 @@ const StatisticTable = () => {
 
   const chartIncomeData = useMemo(
     () => ({
-      labels: dataIncome.map(data => data.category.name),
+      labels: dataIncome.map(data => data.name),
       datasets: [
         {
           label: 'Thu',
@@ -95,18 +127,19 @@ const StatisticTable = () => {
       </div>
 
       <div className="border-t border-gray-300 mt-5">
-        {resultStatistic.map(item => (
-          <div
-            className="flex justify-between items-center py-2 px-5 border border-t-transparent border-borderColor"
-            key={item._id}
-          >
-            <div className="flex items-center gap-5">
-              <img src={`/icon/${item.category.icon}`} alt={`icon ${item.category}`} className="w-10" />
-              <span className="font-medium">{item.category.name}</span>
+        {resultStatistic.length > 0 &&
+          resultStatistic.map(item => (
+            <div
+              className="flex justify-between items-center py-2 px-5 border border-t-transparent border-borderColor"
+              key={item._id}
+            >
+              <div className="flex items-center gap-5">
+                <img src={`/icon/${item.icon}`} alt={`icon ${item.name}`} className="w-10" />
+                <span className="font-medium">{item.name}</span>
+              </div>
+              <span className="font-medium">{formatMoneyUtils(item.money) || 0}</span>
             </div>
-            <span className="font-medium">{formatMoneyUtils(item.money) || 0}</span>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );
