@@ -2,18 +2,14 @@ import Button from '@/components/button';
 import Field from '@/components/field';
 import Input from '@/components/input';
 import Label from '@/components/label';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import MessageForm from '@/components/message/MessageForm';
-
-interface IFormSignUp {
-  username: string;
-  email: string;
-  password: string;
-  confirm_password?: string;
-}
+import { IAccount } from '@/types/auth.type';
+import { register } from '@/services/authService';
+import { toast } from 'react-toastify';
 
 const schema = yup
   .object({
@@ -47,13 +43,18 @@ const SignUpPage = () => {
     formState: { isSubmitting, errors },
     control,
     reset,
-  } = useForm<IFormSignUp>({
+  } = useForm<IAccount>({
     resolver: yupResolver(schema),
     mode: 'onSubmit',
   });
-  const handleSignUp: SubmitHandler<IFormSignUp> = async (data: any) => {
-    console.log(data);
+
+  const navigate = useNavigate();
+
+  const handleSignUp: SubmitHandler<IAccount> = async (data: IAccount) => {
+    await register(data);
     reset();
+    toast.success('Đăng ký thành công. Vui lòng đăng nhập lại để xác thực !');
+    navigate('/sign-in');
   };
 
   return (

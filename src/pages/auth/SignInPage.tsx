@@ -50,7 +50,7 @@ const SignInPage = () => {
     reset();
   };
   return (
-    <div className="bg-primary/40 h-screen pt-[150px] relative">
+    <div className="bg-primary/40 h-screen pt-[150px] relative dark:text-black">
       <img src="/images/layer.png" alt="" className="w-[600px] absolute -top-[150px] -left-[300px] select-none" />
       <img src="/images/layer.png" alt="" className="w-[600px] absolute bottom-0 right-0 select-none" />
       <div className="w-[600px] mx-auto bg-white p-5 rounded-xl shadow-md">
