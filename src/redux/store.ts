@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
-import statisticSlice from './slices/statisticSlice';
-import spendlimitSlice from './slices/spendlimitSlice';
+import statisticReducer from './slices/statisticSlice';
+import spendlimitReducer from './slices/spendlimitSlice';
+import authReducer from './auth/authSlice';
 
 const store = configureStore({
   reducer: {
-    statistic: statisticSlice,
-    spendlimit: spendlimitSlice,
+    auth: authReducer,
+    statistic: statisticReducer,
+    spendlimit: spendlimitReducer,
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware(),
 });

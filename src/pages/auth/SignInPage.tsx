@@ -2,11 +2,14 @@ import Button from '@/components/button';
 import Field from '@/components/field';
 import Input from '@/components/input';
 import Label from '@/components/label';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import MessageForm from '@/components/message/MessageForm';
+import { useAppDispatch } from '@/redux/store';
+import { loginAuth } from '@/redux/auth/authSlice';
+import { toast } from 'react-toastify';
 
 interface IFormSignIn {
   email: string;
@@ -45,9 +48,14 @@ const SignInPage = () => {
     mode: 'onSubmit',
   });
 
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
   const handleSignIn: SubmitHandler<IFormSignIn> = async (data: any) => {
-    console.log(data);
+    dispatch(loginAuth(data));
+    toast.success('Đăng nhập thành công !');
     reset();
+    navigate('/');
   };
   return (
     <div className="bg-primary/40 h-screen pt-[150px] relative dark:text-black">

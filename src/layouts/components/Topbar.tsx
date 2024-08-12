@@ -2,11 +2,15 @@ import { ChevronRightIcon, KeyboardArrowDownIcon, NotificationsNoneOutlinedIcon 
 import Search from '@/components/search';
 import useClickOutSide from '@/hooks/useClickOutSide';
 import useDarkMode from '@/hooks/useDarkMode';
+import { RootState } from '@/redux/store';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 const Topbar = ({ displaySidebar }: { displaySidebar: boolean }) => {
   const { show, setShow, nodeRef } = useClickOutSide();
   const { toggleDarkMode } = useDarkMode();
+  const auth = useSelector((state: RootState) => state.auth.data);
+  console.log('🚀 ~ Topbar ~ auth:', auth);
 
   return (
     <header

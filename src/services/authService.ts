@@ -11,3 +11,12 @@ export const register = async (newAccount: IAccount) => {
     console.log(error);
   }
 };
+
+export const login = async (data: IAccount) => {
+  try {
+    const auth = await http.post('/login', data);
+    return auth;
+  } catch (error) {
+    console.log(error);
+  }
+};

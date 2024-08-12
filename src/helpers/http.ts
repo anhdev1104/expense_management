@@ -9,9 +9,10 @@ class Http {
       headers: {
         'Content-Type': 'application/json',
       },
+      withCredentials: true,
     });
 
-    axios.interceptors.request.use(
+    this.api.interceptors.request.use(
       function (config) {
         // Do something before request is sent
         return config;
@@ -22,10 +23,10 @@ class Http {
       }
     );
 
-    axios.interceptors.response.use(
+    this.api.interceptors.response.use(
       function (response) {
         // Do something with response data
-        return response;
+        return response.data;
       },
       function (error) {
         // Any status codes that falls outside the range of 2xx cause this function to trigger
@@ -38,7 +39,7 @@ class Http {
   async get(url: string, type: string = '') {
     try {
       const response = await this.api.get(`${url}${type && `/${type}`}`);
-      return response.data;
+      return response;
     } catch (error: any) {
       return error.response.data;
     }
@@ -47,7 +48,7 @@ class Http {
   async post(url: string, data: any) {
     try {
       const response = await this.api.post(url, data);
-      return response.data;
+      return response;
     } catch (error: any) {
       return error.response.data;
     }
@@ -56,7 +57,7 @@ class Http {
   async delete(url: string, id: string) {
     try {
       const response = await this.api.delete(`${url}/${id}`);
-      return response.data;
+      return response;
     } catch (error: any) {
       return error.response.data;
     }

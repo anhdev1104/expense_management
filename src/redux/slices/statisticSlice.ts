@@ -18,8 +18,8 @@ export const getStatistic = createAsyncThunk('data/getStatistic', async (date: I
     const { month = '', year = '' } = date;
     const data = await getTransactionByDate(month, year);
     return data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.response.data.message);
   }
 });
 
