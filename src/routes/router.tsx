@@ -8,6 +8,8 @@ import StatisticPage from '@/pages/statistic/StatisticPage';
 import SpendLimit from '@/pages/spendlimit/SpendLimit';
 import SignUpPage from '@/pages/auth/SignUpPage';
 import SignInPage from '@/pages/auth/SignInPage';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 interface IRouter {
   path: string;
@@ -40,19 +42,20 @@ const clientRouter: IRouter[] = [
 
 const authRouter: IRouter[] = [
   {
-    path: '/sign-up',
-    element: SignUpPage,
-    title: 'Tạo tài khoản',
-  },
-  {
     path: '/sign-in',
     element: SignInPage,
     title: 'Đăng nhập',
+  },
+  {
+    path: '/sign-up',
+    element: SignUpPage,
+    title: 'Tạo tài khoản',
   },
 ];
 
 export default function AppRouter() {
   const location = useLocation();
+  const auth = useSelector((state: RootState) => state.auth.data);
 
   useEffect(() => {
     const route = clientRouter.find(route => {
@@ -66,15 +69,23 @@ export default function AppRouter() {
 
   return (
     <Routes>
-      <Route element={<MainLayout />}>
-        {clientRouter.length > 0 &&
-          clientRouter.map(route => <Route key={route.path} path={route.path} element={<route.element />} />)}
-      </Route>
-      <Route>
-        {authRouter.length > 0 &&
-          authRouter.map(route => <Route key={route.path} path={route.path} element={<route.element />} />)}
-      </Route>
-      <Route path="*" element={<NotFoundPage />} />
+      {auth.accessToken ? (
+        <>
+          <Route element={<MainLayout />}>
+            {clientRouter.map(route => (
+              <Route key={route.path} path={route.path} element={<route.element />} />
+            ))}
+          </Route>
+          <Route path="*" element={<NotFoundPage />} />
+        </>
+      ) : (
+        <>
+          {authRouter.map(route => (
+            <Route key={route.path} path={route.path} element={<route.element />} />
+          ))}
+          <Route path="*" element={<SignInPage />} />
+        </>
+      )}
     </Routes>
   );
 }

@@ -1,4 +1,8 @@
 import axios, { AxiosInstance } from 'axios';
+import Cookies from 'universal-cookie';
+import { jwtDecode } from 'jwt-decode';
+
+const cookies = new Cookies();
 
 class Http {
   private api: AxiosInstance;
@@ -13,24 +17,38 @@ class Http {
     });
 
     this.api.interceptors.request.use(
-      function (config) {
-        // Do something before request is sent
+      async config => {
+        const accessToken = cookies.get('accessToken');
+        // const refreshToken = cookies.get('refreshToken');
+        if (accessToken) {
+          // const decodedToken: any = jwtDecode(accessToken);
+
+          // const currentTime = Date.now() / 1000; // Convert to seconds
+          // if (decodedToken.exp - currentTime < 30) {
+          //   try {
+          //     const refreshResponse = await this.api.post('/refreshToken', {
+          //       token: refreshToken,
+          //     });
+          //     console.log('🚀 ~ Http ~ constructor ~ refreshResponse:', refreshResponse);
+          //   } catch (error) {
+          //     return Promise.reject(error);
+          //   }
+          // }
+
+          config.headers['Authorization'] = `Bearer ${accessToken}`;
+        }
         return config;
       },
       function (error) {
-        // Do something with request error
         return Promise.reject(error);
       }
     );
 
     this.api.interceptors.response.use(
       function (response) {
-        // Do something with response data
-        return response.data;
+        return response;
       },
       function (error) {
-        // Any status codes that falls outside the range of 2xx cause this function to trigger
-        // Do something with response error
         return Promise.reject(error);
       }
     );
@@ -39,7 +57,7 @@ class Http {
   async get(url: string, type: string = '') {
     try {
       const response = await this.api.get(`${url}${type && `/${type}`}`);
-      return response;
+      return response.data;
     } catch (error: any) {
       return error.response.data;
     }
@@ -48,7 +66,7 @@ class Http {
   async post(url: string, data: any) {
     try {
       const response = await this.api.post(url, data);
-      return response;
+      return response.data;
     } catch (error: any) {
       return error.response.data;
     }
@@ -57,7 +75,7 @@ class Http {
   async delete(url: string, id: string) {
     try {
       const response = await this.api.delete(`${url}/${id}`);
-      return response;
+      return response.data;
     } catch (error: any) {
       return error.response.data;
     }

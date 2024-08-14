@@ -1,6 +1,6 @@
 import { DeleteIcon, VisibilityIcon } from '@/components/icon/Icon';
 import { deleteSpendlimitData, getSpendlimitData, toggleModal } from '@/redux/slices/spendlimitSlice';
-import { useAppDispatch } from '@/redux/store';
+import { AppDispatch } from '@/redux/store';
 import { ISpendlimit } from '@/types/spendlimit.type';
 import { useDispatch } from 'react-redux';
 
@@ -12,7 +12,7 @@ const SpendTable = ({
   setSpendlimitData: React.Dispatch<React.SetStateAction<ISpendlimit[]>>;
 }) => {
   const dispatch = useDispatch();
-  const dispatchApp = useAppDispatch();
+  const dispatchApp = useDispatch<AppDispatch>();
 
   const onSpendlimitDetails = (id: string) => {
     dispatchApp(getSpendlimitData(id));

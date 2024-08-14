@@ -7,6 +7,6 @@ export interface IAccount {
 
 export interface IAuth {
   accessToken: string;
-  data: object;
+  data: any;
   expiresIn: string | number;
 }

@@ -84,7 +84,7 @@ const StatisticTable = () => {
         {
           label: 'Thu',
           data: dataIncome.map(data => data.money),
-          backgroundColor: ['#2dd340', '#2ad0cd'],
+          backgroundColor: ['#2dd340', '#2ad0cd', '#f17f88', '#758699', '#975742', '#1267f1'],
           borderColor: 'gray',
           borderWidth: 1,
         },

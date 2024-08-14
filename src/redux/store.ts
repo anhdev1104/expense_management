@@ -1,20 +1,35 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { useDispatch } from 'react-redux';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import statisticReducer from './slices/statisticSlice';
 import spendlimitReducer from './slices/spendlimitSlice';
 import authReducer from './auth/authSlice';
+import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
-const store = configureStore({
-  reducer: {
-    auth: authReducer,
-    statistic: statisticReducer,
-    spendlimit: spendlimitReducer,
-  },
-  middleware: getDefaultMiddleware => getDefaultMiddleware(),
+const persistConfig = {
+  key: 'root',
+  version: 1,
+  storage,
+};
+const rootReducer = combineReducers({
+  auth: authReducer,
+  statistic: statisticReducer,
+  spendlimit: spendlimitReducer,
+});
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
-export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
-export const useAppDispatch = () => useDispatch<AppDispatch>();
+const persistor = persistStore(store);
 
-export default store;
+export type RootState = ReturnType<typeof rootReducer>;
+export type AppDispatch = typeof store.dispatch;
+
+export default persistor;

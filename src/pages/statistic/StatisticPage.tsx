@@ -3,9 +3,10 @@ import StatisticDate from './components/StatisticDate';
 import StatisticTable from './components/StatisticTable';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { RootState, useAppDispatch } from '@/redux/store';
+import { AppDispatch, RootState } from '@/redux/store';
 import formatMonthUtils from '@/helpers/formatMonthUtils';
 import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 const StatisticPage = () => {
   const { control, watch } = useForm({
@@ -13,7 +14,7 @@ const StatisticPage = () => {
   });
   const watchedValue = watch('date');
 
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const statisticData = useSelector((state: RootState) => state.statistic.data);
 
   useEffect(() => {

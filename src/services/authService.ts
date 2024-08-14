@@ -8,7 +8,7 @@ export const register = async (newAccount: IAccount) => {
     const data = await http.post('/register', newAccount);
     return data;
   } catch (error) {
-    console.log(error);
+    return error;
   }
 };
 
@@ -17,6 +17,6 @@ export const login = async (data: IAccount) => {
     const auth = await http.post('/login', data);
     return auth;
   } catch (error) {
-    console.log(error);
+    return error;
   }
 };

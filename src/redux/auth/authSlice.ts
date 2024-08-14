@@ -21,9 +21,10 @@ const initialState: IAuthInit = {
 export const loginAuth = createAsyncThunk('auth/loginAuth', async (data: IAccount, thunkAPI) => {
   try {
     const auth = await login(data);
+    console.log('🚀 ~ loginAuth ~ auth:', auth);
     return auth;
   } catch (error: any) {
-    thunkAPI.rejectWithValue(error.response.data.message);
+    return thunkAPI.rejectWithValue(error.response.data.message);
   }
 });
 
@@ -38,7 +39,6 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginAuth.fulfilled, (state, action: PayloadAction<IAuth>) => {
-        console.log('🚀 ~ .addCase ~ payload:', action.payload);
         state.loading = false;
         state.data = action.payload;
       })

@@ -7,9 +7,10 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import MessageForm from '@/components/message/MessageForm';
-import { useAppDispatch } from '@/redux/store';
+import { AppDispatch } from '@/redux/store';
 import { loginAuth } from '@/redux/auth/authSlice';
 import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
 
 interface IFormSignIn {
   email: string;
@@ -40,7 +41,7 @@ const schema = yup
 const SignInPage = () => {
   const {
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting, errors, isValid },
     control,
     reset,
   } = useForm<IFormSignIn>({
@@ -49,14 +50,21 @@ const SignInPage = () => {
   });
 
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleSignIn: SubmitHandler<IFormSignIn> = async (data: any) => {
-    dispatch(loginAuth(data));
-    toast.success('Đăng nhập thành công !');
-    reset();
-    navigate('/');
+    if (!isValid) return;
+    const response = await dispatch(loginAuth(data));
+
+    if (response.payload.accessToken) {
+      toast.success('Đăng nhập thành công !');
+      reset();
+      navigate('/');
+    } else {
+      toast.error(response.payload.message);
+    }
   };
+
   return (
     <div className="bg-primary/40 h-screen pt-[150px] relative dark:text-black">
       <img src="/images/layer.png" alt="" className="w-[600px] absolute -top-[150px] -left-[300px] select-none" />
