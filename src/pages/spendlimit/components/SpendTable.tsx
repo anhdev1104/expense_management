@@ -1,8 +1,12 @@
-import { DeleteIcon, VisibilityIcon } from '@/components/icon/Icon';
-import { deleteSpendlimitData, getSpendlimitData, toggleModal } from '@/redux/slices/spendlimitSlice';
-import { AppDispatch } from '@/redux/store';
+import { CloseIcon, DeleteIcon, VisibilityIcon } from '@/components/icon/Icon';
+import formatDateLimit from '@/helpers/formatDateLimit';
+import formatMoneyUtils from '@/helpers/formatMoneyUtils';
+import useClickOutSide from '@/hooks/useClickOutSide';
+import { deleteSpendlimit, getSpendlimit } from '@/services/spendlimitService';
 import { ISpendlimit } from '@/types/spendlimit.type';
-import { useDispatch } from 'react-redux';
+import { useState } from 'react';
+import ReactModal from 'react-modal';
+import { toast } from 'react-toastify';
 
 const SpendTable = ({
   data,
@@ -11,19 +15,21 @@ const SpendTable = ({
   data: ISpendlimit[];
   setSpendlimitData: React.Dispatch<React.SetStateAction<ISpendlimit[]>>;
 }) => {
-  const dispatch = useDispatch();
-  const dispatchApp = useDispatch<AppDispatch>();
+  const [spendlimitDetails, setSpendlimitDetails] = useState<ISpendlimit[]>([]);
+  const { show, setShow, nodeRef } = useClickOutSide();
 
-  const onSpendlimitDetails = (id: string) => {
-    dispatchApp(getSpendlimitData(id));
-    dispatch(toggleModal());
+  const onSpendlimitDetail = async (id: string) => {
+    const data = await getSpendlimit(id);
+    data && setSpendlimitDetails(data);
+    setShow(!show);
   };
 
-  const handleDeleteSpendlimit = (id: string) => {
+  const handleDeleteSpendlimit = async (id: string) => {
     const isDelete = confirm('Bạn có muốn xoá danh mục hạn mức này không ?');
     if (!isDelete) return;
-    dispatchApp(deleteSpendlimitData(id));
+    await deleteSpendlimit(id);
     setSpendlimitData(prevData => prevData.filter(item => item.category._id !== id));
+    toast.success('Đã xoá danh mục hạn mức!');
   };
 
   return (
@@ -45,7 +51,7 @@ const SpendTable = ({
                   <div
                     className="bg-blue-500 px-3 py-2 flex items-center justify-center text-white rounded-md transition-all duration-300 ease-linear hover:bg-blue-400 cursor-pointer"
                     title="chi tiết"
-                    onClick={() => onSpendlimitDetails(item.category._id)}
+                    onClick={() => onSpendlimitDetail(item.category._id)}
                   >
                     <VisibilityIcon />
                   </div>
@@ -61,6 +67,48 @@ const SpendTable = ({
             ))
             .reverse()}
       </div>
+      <ReactModal
+        isOpen={show}
+        overlayClassName="modal-overlay fixed inset-0 bg-black/40 z-50 flex items-center justify-center"
+        className="modal-content w-full max-w-[700px] bg-white rounded-xl outline-none relative dark:text-slate-800"
+      >
+        <div ref={nodeRef} className="p-10">
+          <button className="absolute z-10 right-5 top-5 text-gray-500" onClick={() => setShow(!show)}>
+            <CloseIcon />
+          </button>
+          <h2 className="text-center text-xl font-semibold">Chi tiết hạn mức danh mục</h2>
+          <table className="min-w-full mt-10">
+            <thead>
+              <tr>
+                <th>Tên danh mục</th>
+                <th>Thời gian</th>
+                <th>Hạn mức</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              {spendlimitDetails?.length > 0 &&
+                spendlimitDetails?.map(item => (
+                  <tr className="text-center h-16" key={item._id}>
+                    <td>
+                      <div className="flex items-center justify-center gap-5">
+                        <img src={`/icon/${item.category.icon}`} alt={`icon ${item.category.name}`} className="w-10" />
+                        <span className="font-medium">{item.category.name}</span>
+                      </div>
+                    </td>
+                    <td>{formatDateLimit(item.date)}</td>
+                    <td>{formatMoneyUtils(item.moneylimit)}</td>
+                    <td>
+                      <button className="bg-yellow-400 text-white px-4 py-2 rounded-md transition-all duration-300 ease-linear hover:bg-yellow-500">
+                        Chỉnh sửa
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      </ReactModal>
     </>
   );
 };

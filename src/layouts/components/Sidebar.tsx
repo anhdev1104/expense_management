@@ -18,7 +18,7 @@ const Sidebar = ({
 }) => {
   return (
     <aside
-      className={`dark:border-r-[#666] dark:border-r dark:bg-slate-800 dark:text-white bg-gray-100 p-5 w-[320px] fixed left-0 top-0 bottom-0 transition-all duration-300 ease-in z-10 ${
+      className={`dark:border-r-[#666] dark:border-r dark:bg-slate-800 text-[#333] dark:text-white bg-gray-100 p-5 w-[320px] fixed left-0 top-0 bottom-0 z-10 ${
         !displaySidebar && '-translate-x-full'
       }`}
     >

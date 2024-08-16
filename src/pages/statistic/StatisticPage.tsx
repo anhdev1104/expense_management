@@ -1,21 +1,17 @@
-import { getStatistic } from '@/redux/slices/statisticSlice';
 import StatisticDate from './components/StatisticDate';
 import StatisticTable from './components/StatisticTable';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { AppDispatch, RootState } from '@/redux/store';
 import formatMonthUtils from '@/helpers/formatMonthUtils';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
+import { ITransaction } from '@/types/transaction.type';
+import { getTransactionByDate } from '@/services/transactionService';
 
 const StatisticPage = () => {
   const { control, watch } = useForm({
     mode: 'onChange',
   });
   const watchedValue = watch('date');
-
-  const dispatch = useDispatch<AppDispatch>();
-  const statisticData = useSelector((state: RootState) => state.statistic.data);
+  const [statisticData, setStatisticData] = useState<ITransaction[]>([]);
 
   useEffect(() => {
     if (watchedValue) {
@@ -24,22 +20,28 @@ const StatisticPage = () => {
         month: formatMonthUtils(newDate.getMonth() + 1),
         year: newDate.getFullYear(),
       };
-      dispatch(getStatistic(selectDate));
+      (async () => {
+        const data = await getTransactionByDate(selectDate.month, selectDate.year);
+        data && setStatisticData(data);
+      })();
     }
-  }, [dispatch, watchedValue]);
+  }, [watchedValue]);
 
   useEffect(() => {
     const currentDate = {
       month: formatMonthUtils(new Date().getMonth() + 1),
       year: new Date().getFullYear(),
     };
-    dispatch(getStatistic(currentDate));
-  }, [dispatch]);
+    (async () => {
+      const data = await getTransactionByDate(currentDate.month, currentDate.year);
+      data && setStatisticData(data);
+    })();
+  }, []);
 
   return (
     <div className="mt-[120px] mb-20 w-[700px] px-10 mx-auto">
       <StatisticDate statisticData={statisticData} control={control} />
-      <StatisticTable />
+      <StatisticTable statisticData={statisticData} />
     </div>
   );
 };

@@ -8,9 +8,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import MessageForm from '@/components/message/MessageForm';
 import { AppDispatch } from '@/redux/store';
-import { loginAuth } from '@/redux/auth/authSlice';
+// import { loginAuth } from '@/redux/auth/authSlice';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
+import { loginAuth } from '@/redux/auth/authThunk';
 
 interface IFormSignIn {
   email: string;

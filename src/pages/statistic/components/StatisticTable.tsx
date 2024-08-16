@@ -3,15 +3,11 @@ import Chart, { CategoryScale } from 'chart.js/auto';
 import { PieChart } from '@/components/charts';
 import { TransactionType } from '@/constants/transaction';
 import formatMoneyUtils from '@/helpers/formatMoneyUtils';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
 import { ITransaction } from '@/types/transaction.type';
 
 Chart.register(CategoryScale);
 
-const StatisticTable = () => {
-  const statisticData = useSelector((state: RootState) => state.statistic.data);
-
+const StatisticTable = ({ statisticData }: { statisticData: ITransaction[] }) => {
   // hàm nhóm dữ liệu theo danh mục
   const groupByCategory = (data: ITransaction[]) => {
     return data.reduce(

@@ -1,12 +1,10 @@
-import Http from '@/helpers/http';
+import axios from 'axios';
 import { IAccount } from '@/types/auth.type';
-
-const http = new Http();
 
 export const register = async (newAccount: IAccount) => {
   try {
-    const data = await http.post('/register', newAccount);
-    return data;
+    const res = await axios.post('http://localhost:8080/api/v1/register', newAccount, { withCredentials: true });
+    return res.data;
   } catch (error) {
     return error;
   }
@@ -14,8 +12,8 @@ export const register = async (newAccount: IAccount) => {
 
 export const login = async (data: IAccount) => {
   try {
-    const auth = await http.post('/login', data);
-    return auth;
+    const auth = await axios.post('http://localhost:8080/api/v1/login', data, { withCredentials: true });
+    return auth.data;
   } catch (error) {
     return error;
   }

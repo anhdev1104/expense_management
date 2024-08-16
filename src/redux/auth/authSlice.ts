@@ -1,44 +1,38 @@
-import { login } from '@/services/authService';
-import { IAccount, IAuth } from '@/types/auth.type';
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { IAuth } from '@/types/auth.type';
+import { createSlice } from '@reduxjs/toolkit';
+import { loginAuth } from './authThunk';
 
-interface IAuthInit {
-  data: IAuth;
+const initialState: {
+  data: IAuth | null;
   loading: boolean;
   error: string | undefined | null;
-}
-
-const initialState: IAuthInit = {
-  data: {
-    accessToken: '',
-    data: {},
-    expiresIn: '',
-  },
+} = {
+  data: null,
   loading: false,
   error: null,
 };
 
-export const loginAuth = createAsyncThunk('auth/loginAuth', async (data: IAccount, thunkAPI) => {
-  try {
-    const auth = await login(data);
-    console.log('🚀 ~ loginAuth ~ auth:', auth);
-    return auth;
-  } catch (error: any) {
-    return thunkAPI.rejectWithValue(error.response.data.message);
-  }
-});
-
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    refreshToken: (state, { payload }) => {
+      if (state.data && payload.accessToken) {
+        state.data.accessToken = payload.accessToken;
+      }
+    },
+    logoutAuth: state => {
+      state.error = null;
+      state.data = null;
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(loginAuth.pending, state => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(loginAuth.fulfilled, (state, action: PayloadAction<IAuth>) => {
+      .addCase(loginAuth.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
       })
@@ -48,5 +42,7 @@ const authSlice = createSlice({
       });
   },
 });
+
+export const { refreshToken, logoutAuth } = authSlice.actions;
 
 export default authSlice.reducer;

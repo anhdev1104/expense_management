@@ -43,7 +43,7 @@ const SignUpPage = () => {
     formState: { isSubmitting, errors },
     control,
     reset,
-  } = useForm<IAccount>({
+  } = useForm({
     resolver: yupResolver(schema),
     mode: 'onSubmit',
   });

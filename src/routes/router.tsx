@@ -69,7 +69,7 @@ export default function AppRouter() {
 
   return (
     <Routes>
-      {auth.accessToken ? (
+      {auth?.accessToken ? (
         <>
           <Route element={<MainLayout />}>
             {clientRouter.map(route => (

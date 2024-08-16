@@ -1,6 +1,7 @@
+import { logoutAuth, refreshToken } from '@/redux/auth/authSlice';
+import { store } from '@/redux/store';
 import axios, { AxiosInstance } from 'axios';
 import Cookies from 'universal-cookie';
-import { jwtDecode } from 'jwt-decode';
 
 const cookies = new Cookies();
 
@@ -18,23 +19,8 @@ class Http {
 
     this.api.interceptors.request.use(
       async config => {
-        const accessToken = cookies.get('accessToken');
-        // const refreshToken = cookies.get('refreshToken');
+        const accessToken = store.getState().auth.data?.accessToken;
         if (accessToken) {
-          // const decodedToken: any = jwtDecode(accessToken);
-
-          // const currentTime = Date.now() / 1000; // Convert to seconds
-          // if (decodedToken.exp - currentTime < 30) {
-          //   try {
-          //     const refreshResponse = await this.api.post('/refreshToken', {
-          //       token: refreshToken,
-          //     });
-          //     console.log('🚀 ~ Http ~ constructor ~ refreshResponse:', refreshResponse);
-          //   } catch (error) {
-          //     return Promise.reject(error);
-          //   }
-          // }
-
           config.headers['Authorization'] = `Bearer ${accessToken}`;
         }
         return config;
@@ -45,10 +31,26 @@ class Http {
     );
 
     this.api.interceptors.response.use(
-      function (response) {
-        return response;
-      },
-      function (error) {
+      response => response,
+      async error => {
+        const originalRequest = error.config;
+        const refreshTokenz = cookies.get('refreshToken');
+
+        if (error.response.data === 'Token không hợp lệ!' && error.response.status === 403) {
+          try {
+            const response = await this.api.post('/refreshToken', {
+              token: refreshTokenz,
+            });
+
+            store.dispatch(refreshToken(response.data));
+            this.api.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`;
+            originalRequest.headers['Authorization'] = `Bearer ${response.data.accessToken}`;
+
+            return this.api(originalRequest);
+          } catch (error) {
+            store.dispatch(logoutAuth());
+          }
+        }
         return Promise.reject(error);
       }
     );
