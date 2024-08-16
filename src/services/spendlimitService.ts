@@ -21,6 +21,15 @@ export const addSpendlimit = async (newSpendlimit: ISpendlimit) => {
   }
 };
 
+export const updateSpendlimit = async (id: string | undefined, dataUpdate: { moneylimit: number }) => {
+  try {
+    const data = await http.put(`/spendlimit/${id}`, dataUpdate);
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const deleteSpendlimit = async (category: string) => {
   try {
     const data = await http.delete('/spendlimit', category);

@@ -4,7 +4,7 @@ import { useController } from 'react-hook-form';
 interface IInput {
   type?: string;
   className?: string;
-  control: any;
+  control?: any;
   name: string;
   placeholder?: string;
 }

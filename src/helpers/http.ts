@@ -74,6 +74,15 @@ class Http {
     }
   }
 
+  async put(url: string, data: any) {
+    try {
+      const response = await this.api.put(url, data);
+      return response.data;
+    } catch (error: any) {
+      return error.response.data;
+    }
+  }
+
   async delete(url: string, id: string) {
     try {
       const response = await this.api.delete(`${url}/${id}`);

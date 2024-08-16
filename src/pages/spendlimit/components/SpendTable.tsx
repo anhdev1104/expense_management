@@ -2,12 +2,11 @@ import { CloseIcon, DeleteIcon, VisibilityIcon } from '@/components/icon/Icon';
 import formatDateLimit from '@/helpers/formatDateLimit';
 import formatMoneyUtils from '@/helpers/formatMoneyUtils';
 import useClickOutSide from '@/hooks/useClickOutSide';
-import { deleteSpendlimit, getSpendlimit } from '@/services/spendlimitService';
+import { deleteSpendlimit, getSpendlimit, updateSpendlimit } from '@/services/spendlimitService';
 import { ISpendlimit } from '@/types/spendlimit.type';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ReactModal from 'react-modal';
 import { toast } from 'react-toastify';
-
 const SpendTable = ({
   data,
   setSpendlimitData,
@@ -16,7 +15,16 @@ const SpendTable = ({
   setSpendlimitData: React.Dispatch<React.SetStateAction<ISpendlimit[]>>;
 }) => {
   const [spendlimitDetails, setSpendlimitDetails] = useState<ISpendlimit[]>([]);
+  const [isEditItem, setIsEditItem] = useState<string | undefined>();
+  const [spendlimitValue, setSpendlimitValue] = useState('');
   const { show, setShow, nodeRef } = useClickOutSide();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isEditItem && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isEditItem]);
 
   const onSpendlimitDetail = async (id: string) => {
     const data = await getSpendlimit(id);
@@ -25,11 +33,31 @@ const SpendTable = ({
   };
 
   const handleDeleteSpendlimit = async (id: string) => {
-    const isDelete = confirm('Bạn có muốn xoá danh mục hạn mức này không ?');
+    const isDelete = confirm('Bạn có muốn xoá danh mục hạn mức này không?');
     if (!isDelete) return;
     await deleteSpendlimit(id);
     setSpendlimitData(prevData => prevData.filter(item => item.category._id !== id));
     toast.success('Đã xoá danh mục hạn mức!');
+  };
+
+  const handleUpdateSpendlimit = async (id: string | undefined) => {
+    if (Number.isNaN(+spendlimitValue)) {
+      return toast.error('Vui lòng nhập số tiền hợp lệ!');
+    }
+
+    try {
+      await updateSpendlimit(id, { moneylimit: +spendlimitValue });
+      console.log(data);
+
+      setSpendlimitDetails(prevData =>
+        prevData.map(item => (item._id === id ? { ...item, moneylimit: +spendlimitValue } : item))
+      );
+      setIsEditItem(undefined);
+      setSpendlimitValue(''); // Clear the input value after update
+      toast.success('Cập nhật thành công!');
+    } catch (error) {
+      toast.error('Có lỗi xảy ra, vui lòng thử lại!');
+    }
   };
 
   return (
@@ -97,11 +125,34 @@ const SpendTable = ({
                       </div>
                     </td>
                     <td>{formatDateLimit(item.date)}</td>
-                    <td>{formatMoneyUtils(item.moneylimit)}</td>
                     <td>
-                      <button className="bg-yellow-400 text-white px-4 py-2 rounded-md transition-all duration-300 ease-linear hover:bg-yellow-500">
-                        Chỉnh sửa
-                      </button>
+                      {isEditItem === item._id ? (
+                        <input
+                          defaultValue={item.moneylimit}
+                          className="outline-none border-2 rounded-md text-center p-1 w-[120px]"
+                          ref={inputRef}
+                          onChange={e => setSpendlimitValue(e.target.value)}
+                        />
+                      ) : (
+                        formatMoneyUtils(item.moneylimit)
+                      )}
+                    </td>
+                    <td>
+                      {isEditItem === item._id ? (
+                        <button
+                          className="bg-blue-400 text-white px-4 py-2 rounded-md transition-all duration-300 ease-linear hover:bg-blue-500"
+                          onClick={() => handleUpdateSpendlimit(item._id)}
+                        >
+                          Cập nhập
+                        </button>
+                      ) : (
+                        <button
+                          className="bg-yellow-400 text-white px-4 py-2 rounded-md transition-all duration-300 ease-linear hover:bg-yellow-500"
+                          onClick={() => setIsEditItem(item._id)}
+                        >
+                          Chỉnh sửa
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}
