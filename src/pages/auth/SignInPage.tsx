@@ -12,6 +12,8 @@ import { AppDispatch } from '@/redux/store';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { loginAuth } from '@/redux/auth/authThunk';
+import useToggle from '@/hooks/useToggle';
+import { VisibilityIcon, VisibilityOffIcon } from '@/components/icon/Icon';
 
 interface IFormSignIn {
   email: string;
@@ -49,7 +51,7 @@ const SignInPage = () => {
     resolver: yupResolver(schema),
     mode: 'onSubmit',
   });
-
+  const { show: showPass, handleToggle: handleShowPass } = useToggle();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -83,7 +85,18 @@ const SignInPage = () => {
           </Field>
           <Field>
             <Label htmlFor="password">Mật khẩu</Label>
-            <Input type="password" name="password" className="mt-3" placeholder="Tối thiểu 8 kí tự" control={control} />
+            <div className="relative">
+              <Input
+                type={showPass ? 'text' : 'password'}
+                name="password"
+                className="mt-3"
+                placeholder="Tối thiểu 8 kí tự"
+                control={control}
+              />
+              <div className="cursor-pointer absolute top-6 right-3 text-slate-500" onClick={handleShowPass}>
+                {showPass ? <VisibilityIcon /> : <VisibilityOffIcon />}
+              </div>
+            </div>
             <MessageForm error={errors.password?.message} />
           </Field>
           <div className="mt-10">

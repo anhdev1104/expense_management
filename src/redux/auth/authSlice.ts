@@ -1,6 +1,9 @@
 import { IAuth } from '@/types/auth.type';
 import { createSlice } from '@reduxjs/toolkit';
 import { loginAuth } from './authThunk';
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies();
 
 const initialState: {
   data: IAuth | null;
@@ -24,6 +27,7 @@ const authSlice = createSlice({
     logoutAuth: state => {
       state.error = null;
       state.data = null;
+      cookies.remove('refreshToken');
     },
   },
   extraReducers: builder => {

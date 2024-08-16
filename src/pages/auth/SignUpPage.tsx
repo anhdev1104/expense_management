@@ -10,6 +10,8 @@ import MessageForm from '@/components/message/MessageForm';
 import { IAccount } from '@/types/auth.type';
 import { register } from '@/services/authService';
 import { toast } from 'react-toastify';
+import useToggle from '@/hooks/useToggle';
+import { VisibilityIcon, VisibilityOffIcon } from '@/components/icon/Icon';
 
 const schema = yup
   .object({
@@ -47,8 +49,9 @@ const SignUpPage = () => {
     resolver: yupResolver(schema),
     mode: 'onSubmit',
   });
-
   const navigate = useNavigate();
+  const { show: showPass, handleToggle: handleShowPass } = useToggle();
+  const { show: showConfirm, handleToggle: handleShowConfirm } = useToggle();
 
   const handleSignUp: SubmitHandler<IAccount> = async (data: IAccount) => {
     await register(data);
@@ -79,18 +82,34 @@ const SignUpPage = () => {
           </Field>
           <Field>
             <Label htmlFor="password">Mật khẩu</Label>
-            <Input type="password" name="password" className="mt-3" placeholder="Tối thiểu 8 kí tự" control={control} />
+            <div className="relative">
+              <Input
+                type={showPass ? 'text' : 'password'}
+                name="password"
+                className="mt-3"
+                placeholder="Tối thiểu 8 kí tự"
+                control={control}
+              />
+              <div className="cursor-pointer absolute top-6 right-3 text-slate-500" onClick={handleShowPass}>
+                {showPass ? <VisibilityIcon /> : <VisibilityOffIcon />}
+              </div>
+            </div>
             <MessageForm error={errors.password?.message} />
           </Field>
           <Field>
             <Label htmlFor="confirm_password">Nhập lại mật khẩu</Label>
-            <Input
-              type="password"
-              name="confirm_password"
-              className="mt-3"
-              placeholder="Nhập lại mật khẩu"
-              control={control}
-            />
+            <div className="relative">
+              <Input
+                type={showConfirm ? 'text' : 'password'}
+                name="confirm_password"
+                className="mt-3"
+                placeholder="Nhập lại mật khẩu"
+                control={control}
+              />
+              <div className="cursor-pointer absolute top-6 right-3 text-slate-500" onClick={handleShowConfirm}>
+                {showPass ? <VisibilityIcon /> : <VisibilityOffIcon />}
+              </div>
+            </div>
             <MessageForm error={errors?.confirm_password?.message} />
           </Field>
           <div className="mt-10">

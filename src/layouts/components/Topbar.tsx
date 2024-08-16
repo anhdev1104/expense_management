@@ -2,7 +2,9 @@ import { ChevronRightIcon, KeyboardArrowDownIcon, NotificationsNoneOutlinedIcon 
 import Search from '@/components/search';
 import useClickOutSide from '@/hooks/useClickOutSide';
 import useDarkMode from '@/hooks/useDarkMode';
+import { logoutAuth } from '@/redux/auth/authSlice';
 import { RootState } from '@/redux/store';
+import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -10,6 +12,7 @@ const Topbar = ({ displaySidebar }: { displaySidebar: boolean }) => {
   const { show, setShow, nodeRef } = useClickOutSide();
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const auth = useSelector((state: RootState) => state.auth.data);
+  const dispatch = useDispatch();
 
   return (
     <header
@@ -47,9 +50,9 @@ const Topbar = ({ displaySidebar }: { displaySidebar: boolean }) => {
                   </Link>
                 </li>
                 <li className="cursor-pointer hover:bg-white hover:shadow-sm hover:font-medium transition ease-in-out group">
-                  <Link to="" className="py-2 block px-5 text-sm dark:text-black">
+                  <div className="py-2 block px-5 text-sm dark:text-black" onClick={() => dispatch(logoutAuth())}>
                     Đăng xuất
-                  </Link>
+                  </div>
                 </li>
               </ul>
               <div className="dropdown-triangle"></div>
