@@ -12,6 +12,7 @@ const StatisticPage = () => {
   });
   const watchedValue = watch('date');
   const [statisticData, setStatisticData] = useState<ITransaction[]>([]);
+  const [dateSelect, setDateSelect] = useState<any>();
 
   useEffect(() => {
     if (watchedValue) {
@@ -20,6 +21,7 @@ const StatisticPage = () => {
         month: formatMonthUtils(newDate.getMonth() + 1),
         year: newDate.getFullYear(),
       };
+      setDateSelect(selectDate);
       (async () => {
         const data = await getTransactionByDate(selectDate.month, selectDate.year);
         data && setStatisticData(data);
@@ -32,6 +34,7 @@ const StatisticPage = () => {
       month: formatMonthUtils(new Date().getMonth() + 1),
       year: new Date().getFullYear(),
     };
+    setDateSelect(currentDate);
     (async () => {
       const data = await getTransactionByDate(currentDate.month, currentDate.year);
       data && setStatisticData(data);
@@ -41,7 +44,7 @@ const StatisticPage = () => {
   return (
     <div className="mt-[120px] mb-20 w-[700px] px-10 mx-auto">
       <StatisticDate statisticData={statisticData} control={control} />
-      <StatisticTable statisticData={statisticData} />
+      <StatisticTable statisticData={statisticData} dateSelect={dateSelect} />
     </div>
   );
 };

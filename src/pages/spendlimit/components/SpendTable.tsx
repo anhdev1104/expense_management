@@ -2,11 +2,13 @@ import { CloseIcon, DeleteIcon, VisibilityIcon } from '@/components/icon/Icon';
 import formatDateLimit from '@/helpers/formatDateLimit';
 import formatMoneyUtils from '@/helpers/formatMoneyUtils';
 import useClickOutSide from '@/hooks/useClickOutSide';
+import useToggle from '@/hooks/useToggle';
 import { deleteSpendlimit, getSpendlimit, updateSpendlimit } from '@/services/spendlimitService';
 import { ISpendlimit } from '@/types/spendlimit.type';
 import { useEffect, useRef, useState } from 'react';
 import ReactModal from 'react-modal';
 import { toast } from 'react-toastify';
+
 const SpendTable = ({
   data,
   setSpendlimitData,
@@ -17,7 +19,9 @@ const SpendTable = ({
   const [spendlimitDetails, setSpendlimitDetails] = useState<ISpendlimit[]>([]);
   const [isEditItem, setIsEditItem] = useState<string | undefined>();
   const [spendlimitValue, setSpendlimitValue] = useState('');
-  const { show, setShow, nodeRef } = useClickOutSide();
+  const [idSpendlimit, setIdSpendlimit] = useState<string>('');
+  const { show, setShow, nodeRef } = useClickOutSide(setIsEditItem);
+  const { show: showConfirmDelete, handleToggle: setShowConfirmDelete } = useToggle();
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -32,11 +36,20 @@ const SpendTable = ({
     setShow(!show);
   };
 
-  const handleDeleteSpendlimit = async (id: string) => {
-    const isDelete = confirm('Bạn có muốn xoá danh mục hạn mức này không?');
-    if (!isDelete) return;
-    await deleteSpendlimit(id);
-    setSpendlimitData(prevData => prevData.filter(item => item.category._id !== id));
+  const handleCloseModal = () => {
+    setShow(!show);
+    setIsEditItem(undefined);
+  };
+
+  const handleShowConfirm = async (id: string) => {
+    setShowConfirmDelete();
+    setIdSpendlimit(id);
+  };
+
+  const handleDeleteSpendlimit = async () => {
+    await deleteSpendlimit(idSpendlimit);
+    setSpendlimitData(prevData => prevData.filter(item => item.category._id !== idSpendlimit));
+    setShowConfirmDelete();
     toast.success('Đã xoá danh mục hạn mức!');
   };
 
@@ -86,7 +99,7 @@ const SpendTable = ({
                   <div
                     className="bg-red-500 px-3 py-2 flex items-center justify-center text-white rounded-md transition-all duration-300 ease-linear hover:bg-red-400 cursor-pointer"
                     title="xoá"
-                    onClick={() => handleDeleteSpendlimit(item.category._id)}
+                    onClick={() => handleShowConfirm(item.category._id)}
                   >
                     <DeleteIcon />
                   </div>
@@ -100,8 +113,8 @@ const SpendTable = ({
         overlayClassName="modal-overlay fixed inset-0 bg-black/40 z-50 flex items-center justify-center"
         className="modal-content w-full max-w-[700px] bg-white rounded-xl outline-none relative dark:text-slate-800"
       >
-        <div ref={nodeRef} className="p-10">
-          <button className="absolute z-10 right-5 top-5 text-gray-500" onClick={() => setShow(!show)}>
+        <div ref={nodeRef} className="p-10 max-h-[450px] overflow-y-scroll">
+          <button className="absolute z-10 right-5 top-5 text-gray-500" onClick={handleCloseModal}>
             <CloseIcon />
           </button>
           <h2 className="text-center text-xl font-semibold">Chi tiết hạn mức danh mục</h2>
@@ -158,6 +171,29 @@ const SpendTable = ({
                 ))}
             </tbody>
           </table>
+        </div>
+      </ReactModal>
+      <ReactModal
+        isOpen={showConfirmDelete}
+        overlayClassName="modal-overlay fixed inset-0 bg-black/40 z-50 flex items-center justify-center"
+        className="modal-content w-full max-w-[400px] bg-white rounded-xl outline-none relative dark:text-slate-800"
+      >
+        <div className="p-5">
+          <h3 className="text-center font-semibold text-xl">Bạn có muốn xoá danh mục hạn mức chi tiêu này không?</h3>
+          <div className="flex gap-5 items-center justify-evenly mt-10">
+            <button
+              className="bg-red-400 text-white px-5 py-2 rounded-md transition-all duration-300 ease-linear hover:bg-red-500 min-w-24"
+              onClick={handleDeleteSpendlimit}
+            >
+              Xoá
+            </button>
+            <button
+              className="bg-gray-400 text-white px-5 py-2 rounded-md transition-all duration-300 ease-linear hover:bg-gray-500 min-w-24"
+              onClick={setShowConfirmDelete}
+            >
+              Huỷ
+            </button>
+          </div>
         </div>
       </ReactModal>
     </>

@@ -8,7 +8,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import MessageForm from '@/components/message/MessageForm';
 import { AppDispatch } from '@/redux/store';
-// import { loginAuth } from '@/redux/auth/authSlice';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { loginAuth } from '@/redux/auth/authThunk';
@@ -64,12 +63,12 @@ const SignInPage = () => {
       reset();
       navigate('/');
     } else {
-      toast.error(response.payload.message);
+      toast.error(response.payload.response.data.message);
     }
   };
 
   return (
-    <div className="bg-primary/40 h-screen pt-[150px] relative dark:text-black">
+    <div className="bg-primary/40 h-screen pt-[100px] relative dark:text-black">
       <img src="/images/layer.png" alt="" className="w-[600px] absolute -top-[150px] -left-[300px] select-none" />
       <img src="/images/layer.png" alt="" className="w-[600px] absolute bottom-0 right-0 select-none" />
       <div className="w-[600px] mx-auto bg-white p-5 rounded-xl shadow-md">

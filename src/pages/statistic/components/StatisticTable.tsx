@@ -4,17 +4,21 @@ import { PieChart } from '@/components/charts';
 import { TransactionType } from '@/constants/transaction';
 import formatMoneyUtils from '@/helpers/formatMoneyUtils';
 import { ITransaction } from '@/types/transaction.type';
+import ReactModal from 'react-modal';
+import { CloseIcon } from '@/components/icon/Icon';
+import useClickOutSide from '@/hooks/useClickOutSide';
+import { getTransactionDetails } from '@/services/transactionService';
 
 Chart.register(CategoryScale);
 
-const StatisticTable = ({ statisticData }: { statisticData: ITransaction[] }) => {
+const StatisticTable = ({ statisticData, dateSelect }: { statisticData: ITransaction[]; dateSelect: any }) => {
   // hàm nhóm dữ liệu theo danh mục
   const groupByCategory = (data: ITransaction[]) => {
     return data.reduce(
       (acc, item) => {
         const id = item.category._id;
-        const categoryName = item.category?.name ?? 'Danh mục chưa xác định'; // Mặc định là "Danh mục chưa xác định"
-        const categoryIcon = item.category?.icon ?? 'default-icon.png'; // Icon mặc định
+        const categoryName = item.category?.name ?? 'Danh mục chưa xác định';
+        const categoryIcon = item.category?.icon ?? 'default-icon.png';
 
         if (!acc[categoryName]) {
           acc[categoryName] = { _id: id, name: categoryName, icon: categoryIcon, money: 0 };
@@ -37,6 +41,7 @@ const StatisticTable = ({ statisticData }: { statisticData: ITransaction[] }) =>
 
   const dataExpense = useMemo(() => {
     const groupedData = groupByCategory(statisticData.filter(item => item.type === TransactionType.EXPENSE));
+    statisticData;
     return Object.values(groupedData);
   }, [statisticData]);
 
@@ -46,6 +51,8 @@ const StatisticTable = ({ statisticData }: { statisticData: ITransaction[] }) =>
   }, [statisticData]);
 
   const [tabActive, setTabActive] = useState<string>('expense');
+  const [statisticDetails, setStatisticDetails] = useState<ITransaction[]>([]);
+  const { show, setShow } = useClickOutSide();
 
   const chartSpendData = useMemo(
     () => ({
@@ -92,8 +99,18 @@ const StatisticTable = ({ statisticData }: { statisticData: ITransaction[] }) =>
   const resultStatistic = tabActive === 'expense' ? dataExpense : dataIncome;
   const chartData = tabActive === 'expense' ? chartSpendData : chartIncomeData;
 
+  const fetchStatisticDetails = async (idCategory: string | null | undefined) => {
+    if (!idCategory) return;
+    setShow(true);
+
+    (async () => {
+      const data = await getTransactionDetails(idCategory, dateSelect.month, dateSelect.year);
+      data && setStatisticDetails(data);
+    })();
+  };
+
   return (
-    <div>
+    <>
       <div className="flex items-center justify-between">
         <div className="flex-1 cursor-pointer" onClick={() => setTabActive('expense')}>
           <span
@@ -126,8 +143,9 @@ const StatisticTable = ({ statisticData }: { statisticData: ITransaction[] }) =>
         {resultStatistic.length > 0 &&
           resultStatistic.map(item => (
             <div
-              className="flex justify-between items-center py-2 px-5 border border-t-transparent border-borderColor"
+              className="flex justify-between items-center py-2 px-5 border border-t-transparent border-borderColor cursor-pointer hover:bg-gray-100 transition-all"
               key={item._id}
+              onClick={() => fetchStatisticDetails(item._id)}
             >
               <div className="flex items-center gap-5">
                 <img src={`/icon/${item.icon}`} alt={`icon ${item.name}`} className="w-10" />
@@ -137,7 +155,51 @@ const StatisticTable = ({ statisticData }: { statisticData: ITransaction[] }) =>
             </div>
           ))}
       </div>
-    </div>
+      <ReactModal
+        isOpen={show}
+        overlayClassName="modal-overlay fixed inset-0 bg-black/40 z-50 flex items-center justify-center"
+        className="modal-content w-full max-w-[750px] bg-white rounded-xl outline-none relative dark:text-slate-800"
+      >
+        <div className="p-10 max-h-[450px] overflow-y-scroll">
+          <button className="absolute z-10 right-5 top-5 text-gray-500" onClick={() => setShow(false)}>
+            <CloseIcon />
+          </button>
+          <h2 className="text-center text-xl font-semibold">Báo cáo chi tiết chi tiêu trong tháng</h2>
+          <table className="min-w-full mt-10">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tên danh mục</th>
+                <th>Thời gian</th>
+                <th>Số tiền</th>
+                <th>Ghi chú</th>
+                <th>Loại</th>
+              </tr>
+            </thead>
+            <tbody>
+              {statisticDetails.length > 0 &&
+                statisticDetails.map((item, index) => (
+                  <tr className="text-center h-16" key={item._id}>
+                    <td>{index + 1}</td>
+                    <td>
+                      <div className="flex items-center justify-center gap-5">
+                        <img src={`/icon/${item.category.icon}`} alt={`icon ${item.category.name}`} className="w-10" />
+                        <span className="font-medium">{item.category.name}</span>
+                      </div>
+                    </td>
+                    <td>{new Date(item.date).toLocaleDateString('vi-VI')}</td>
+                    <td>{formatMoneyUtils(item.money)}</td>
+                    <td>
+                      <div className="max-w-[200px] leading-6 text-center w-full mx-auto">{item.description}</div>
+                    </td>
+                    <td>{item.type === TransactionType.EXPENSE ? 'Chi tiêu' : 'Thu nhập'}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      </ReactModal>
+    </>
   );
 };
 
