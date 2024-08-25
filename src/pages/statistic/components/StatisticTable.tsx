@@ -52,7 +52,7 @@ const StatisticTable = ({ statisticData, dateSelect }: { statisticData: ITransac
 
   const [tabActive, setTabActive] = useState<string>('expense');
   const [statisticDetails, setStatisticDetails] = useState<ITransaction[]>([]);
-  const { show, setShow } = useClickOutSide();
+  const { show, setShow, nodeRef } = useClickOutSide();
 
   const chartSpendData = useMemo(
     () => ({
@@ -101,11 +101,11 @@ const StatisticTable = ({ statisticData, dateSelect }: { statisticData: ITransac
 
   const fetchStatisticDetails = async (idCategory: string | null | undefined) => {
     if (!idCategory) return;
-    setShow(true);
 
     (async () => {
       const data = await getTransactionDetails(idCategory, dateSelect.month, dateSelect.year);
       data && setStatisticDetails(data);
+      setShow(true);
     })();
   };
 
@@ -160,7 +160,7 @@ const StatisticTable = ({ statisticData, dateSelect }: { statisticData: ITransac
         overlayClassName="modal-overlay fixed inset-0 bg-black/40 z-50 flex items-center justify-center"
         className="modal-content w-full max-w-[750px] bg-white rounded-xl outline-none relative dark:text-slate-800"
       >
-        <div className="p-10 max-h-[450px] overflow-y-scroll">
+        <div className="p-10 max-h-[450px] overflow-y-scroll" ref={nodeRef}>
           <button className="absolute z-10 right-5 top-5 text-gray-500" onClick={() => setShow(false)}>
             <CloseIcon />
           </button>

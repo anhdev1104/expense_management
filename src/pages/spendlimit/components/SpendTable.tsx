@@ -56,6 +56,10 @@ const SpendTable = ({
   const handleUpdateSpendlimit = async (id: string | undefined) => {
     if (Number.isNaN(+spendlimitValue)) {
       return toast.error('Vui lòng nhập số tiền hợp lệ!');
+    } else if (!spendlimitValue) {
+      setIsEditItem(undefined);
+      setSpendlimitValue('');
+      return;
     }
 
     try {
@@ -66,7 +70,7 @@ const SpendTable = ({
         prevData.map(item => (item._id === id ? { ...item, moneylimit: +spendlimitValue } : item))
       );
       setIsEditItem(undefined);
-      setSpendlimitValue(''); // Clear the input value after update
+      setSpendlimitValue('');
       toast.success('Cập nhật thành công!');
     } catch (error) {
       toast.error('Có lỗi xảy ra, vui lòng thử lại!');
