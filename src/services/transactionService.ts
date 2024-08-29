@@ -8,7 +8,7 @@ export const getTransaction = async (type = '') => {
     const data = await http.get('/transaction', type);
     return data;
   } catch (error) {
-    console.log(error);
+    return error;
   }
 };
 
@@ -21,7 +21,7 @@ export const getTransactionDetails = async (
     const data = await http.get(`/transaction/${idCategory}?month=${month}&year=${year}`);
     return data;
   } catch (error) {
-    console.log(error);
+    return error;
   }
 };
 
@@ -30,7 +30,7 @@ export const getTransactionByDate = async (month: string | number = '', year: st
     const data = await http.get(`/transactionbydate?month=${month}&year=${year}`);
     return data;
   } catch (error) {
-    console.log(error);
+    return error;
   }
 };
 
@@ -39,6 +39,6 @@ export const addTransaction = async (newTransaction: ITransaction) => {
     const data = await http.post('/transaction', newTransaction);
     return data;
   } catch (error) {
-    console.log(error);
+    return error;
   }
 };

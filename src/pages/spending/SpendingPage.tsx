@@ -60,15 +60,24 @@ const SpendingPage = () => {
   };
 
   const onSpendingHandler: SubmitHandler<ITransaction> = async values => {
-    const newTransaction = { ...values, type: tabActive };
-    await addTransaction(newTransaction);
-    if (tabActive === TransactionType.EXPENSE) {
-      toast.success('Đã thêm khoảng chi !');
-    } else {
-      toast.success('Đã thêm khoảng thu !');
+    try {
+      const newTransaction = { ...values, type: tabActive };
+      const data = await addTransaction(newTransaction);
+      console.log('🚀 ~ SpendingPage ~ data:', data);
+      if (data.message) {
+        toast.error(data.message);
+      } else {
+        if (tabActive === TransactionType.EXPENSE) {
+          toast.success('Đã thêm khoảng chi !');
+        } else {
+          toast.success('Đã thêm khoảng thu !');
+        }
+      }
+      reset();
+      setResetCate(!resetCate);
+    } catch (error) {
+      console.log(error);
     }
-    reset();
-    setResetCate(!resetCate);
   };
 
   return (
